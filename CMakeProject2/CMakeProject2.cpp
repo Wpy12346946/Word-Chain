@@ -1,9 +1,9 @@
 ﻿#include"CMakeProject2.h"
 
-int gen_chain(char* words[]) {
+int gen_chain(char* words[], int len) {
     Graph graph;
     graph.init();
-    graph.makeGraph(words, true, false);
+    graph.makeGraph(words, len, true, false);
     return 1;
 }
 
@@ -40,7 +40,7 @@ int main() {
         words[i] = const_cast<char*>(wordList[i].c_str());
     }
 
-    gen_chain(words);
+    gen_chain(words, wordList.size());
 
     return 0;
 }

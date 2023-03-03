@@ -10,14 +10,19 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+
 class Graph {
     map<int, vector<Edge>> graph;
 public:
     void init();
 
-    void makeGraph(char *words[], bool isWeight, bool reverse);
+    map<int, vector<Edge>> makeGraph(char *words[], int len, bool isWeight, bool reverse);
 
     void addEdge(string word, bool isWeight, bool reverse);
+
+    bool hasCircle();
+
+    void deleteJ(char j);
 };
 
 
