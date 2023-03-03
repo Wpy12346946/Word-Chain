@@ -1,0 +1,17 @@
+# ninja log v5
+22	434	6995507832713743	CMakeProject2/CMakeFiles/CMakeProject2.dir/Edge.cpp.obj	bf8dc4ce64f611f9
+48	568	6995507833963640	CMakeProject2/CMakeFiles/CMakeProject2.dir/Graph.cpp.obj	d52d227df7d5a9eb
+0	767	6995507835994785	CMakeProject2/CMakeFiles/CMakeProject2.dir/CMakeProject2.cpp.obj	acdac974cf48d3b8
+769	1481	6995507842917523	CMakeProject2/CMakeProject2.exe	b0ce2177f75801b0
+23	439	6995508098504057	CMakeProject2/CMakeFiles/CMakeProject2.dir/Edge.cpp.obj	bf8dc4ce64f611f9
+47	597	6995508100223009	CMakeProject2/CMakeFiles/CMakeProject2.dir/Graph.cpp.obj	d52d227df7d5a9eb
+2	795	6995508102200560	CMakeProject2/CMakeFiles/CMakeProject2.dir/CMakeProject2.cpp.obj	acdac974cf48d3b8
+796	1210	6995508105682099	CMakeProject2/CMakeProject2.exe	b0ce2177f75801b0
+47	448	6995509555600285	CMakeProject2/CMakeFiles/CMakeProject2.dir/Edge.cpp.obj	bf8dc4ce64f611f9
+22	549	6995509556573007	CMakeProject2/CMakeFiles/CMakeProject2.dir/Graph.cpp.obj	d52d227df7d5a9eb
+2	747	6995509558604435	CMakeProject2/CMakeFiles/CMakeProject2.dir/CMakeProject2.cpp.obj	acdac974cf48d3b8
+748	1257	6995509562978354	CMakeProject2/CMakeProject2.exe	b0ce2177f75801b0
+3	1024	6995512741348573	CMakeProject2/CMakeFiles/CMakeProject2.dir/Edge.cpp.obj	bf8dc4ce64f611f9
+25	1057	6995512741736463	CMakeProject2/CMakeFiles/CMakeProject2.dir/Graph.cpp.obj	d52d227df7d5a9eb
+53	1075	6995512741933678	CMakeProject2/CMakeFiles/CMakeProject2.dir/CMakeProject2.cpp.obj	acdac974cf48d3b8
+1076	1503	6995512745534344	CMakeProject2/CMakeProject2.exe	b0ce2177f75801b0
