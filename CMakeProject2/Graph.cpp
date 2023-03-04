@@ -43,7 +43,7 @@ void Graph::deleteJ(char j) {
 
 //获取所有链并存到res中
 void Graph::findAll(int cur, vector<vector<string>> &res, vector<string> &chain) {
-	for (Edge edge : graph[cur]) {
+	for (Edge &edge : graph[cur]) {
 		if (!edge.isVis()) {
 			chain.push_back(edge.getWord());
 			res.push_back(chain);
