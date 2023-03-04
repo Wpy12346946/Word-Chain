@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Core.h"
 
-vector<string> results;
+vector<string> results;//保存要返回给调用方的所有字符串
 
 int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, bool enable_loop) {
     return 0;
