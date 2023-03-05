@@ -8,23 +8,25 @@
 #include <map>
 #include "Edge.h"
 #include <vector>
+#include <queue>
 #include <algorithm>
 #include <string>
 
 class Graph {
-	map<int, vector<Edge>> graph;
+    map<int, vector<Edge>> graph;
+    int inDegree[26] = {0};//记录每个点（不含自环）的入度
 public:
-	void init();
+    void init();
 
-	map<int, vector<Edge>> makeGraph(char *words[], int len, bool isWeight, bool reverse);
+    map<int, vector<Edge>> makeGraph(char *words[], int len, bool isWeight, bool reverse);
 
-	void addEdge(string word, bool isWeight, bool reverse);
+    void addEdge(string word, bool isWeight, bool reverse);
 
-	bool hasCircle();
+    bool hasCircle();
 
-	void deleteJ(char j);
+    void deleteJ(char j);
 
-	void findAll(int cur, vector<vector<string>> &res, vector<string> &chain);
+    void findAll(int cur, vector<vector<string>> &res, vector<string> &chain);
 };
 
 

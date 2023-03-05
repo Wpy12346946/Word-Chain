@@ -19,6 +19,10 @@ int Edge::getTo() {
 	return to;
 }
 
+int Edge::getFrom() {
+	return from;
+}
+
 string &Edge::getWord() {
 	return word;
 }
