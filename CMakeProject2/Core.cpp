@@ -32,15 +32,12 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
 
             if (head != '\0') {
                 if (tail != '\0') {
-                    vector<Edge *> newChain;
-                    graph.findMax(head - 'a', tail - 'a', results, newChain);
+                    graph.findMax(head - 'a', tail - 'a', results, vector<Edge *>());
                 } else {
-                    vector<Edge *> newChain;
-                    graph.findMax(head - 'a', results, newChain);
+                    graph.findMax(head - 'a', results, vector<Edge *>());
                 }
             } else if (tail != '\0') {
-                vector<Edge *> newChain;
-                graph.findMax(tail - 'a', results, newChain);
+                graph.findMax(tail - 'a', results, vector<Edge *>());
             } else {
                 graph.findMax(results);
             }

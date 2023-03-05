@@ -33,9 +33,9 @@ public:
 
     void findMax(vector<string> &chain);
 
-    void findMax(int head, vector<string> &chain, vector<Edge*> newChain);
+    void findMax(int head, vector<string> &chain, vector<Edge *> newChain);
 
-    void findMax(int head, int tail, vector<string> &chain, vector<Edge*> newChain);
+    void findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain);
 
     void findMaxRecursive(vector<string> &chain);
 
@@ -43,9 +43,9 @@ public:
 
     void findMaxRecursive(int head, int tail, vector<string> &chain);
 
-    int sum(vector<Edge*> &chain);
+    int sum(vector<Edge *> &chain);
 
-    void saveChain(vector<string> &chain, vector<Edge*> &edges);//判断并决定是否更新（edges满足所有参数的条件）
+    void saveChain(vector<string> &chain, vector<Edge *> &edges);//判断并决定是否更新（edges满足所有参数的条件）
 };
 
 
