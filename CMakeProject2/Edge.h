@@ -24,6 +24,8 @@ public:
 
     int getFrom();
 
+    int getLen();
+
 	string &getWord();
 
 	void setVis(bool vis);

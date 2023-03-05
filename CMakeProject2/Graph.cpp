@@ -89,3 +89,151 @@ void Graph::findAll(int cur, vector<vector<string>> &res, vector<string> &chain)
         }
     }
 }
+
+void Graph::simplify() {
+    // 删除非最长边，删除后保证如果有自环，则自环一定在graph[i][0]的位置
+    for (int i = 0; i < 26; i++) {
+        int maxIdx[26] = {0};//最大边的index
+        for (int &j: maxIdx) {
+            j = -1;
+        }
+        for (int j = 0; j < graph[i].size(); j++) {
+            Edge &edge = graph[i][j];
+            if (maxIdx[edge.getTo()] == -1) {
+                maxIdx[edge.getTo()] = j;
+            } else if (graph[i][maxIdx[edge.getTo()]].getLen() < edge.getLen()) {
+                maxIdx[edge.getTo()] = j;
+            }
+        }
+        vector<Edge> edges;
+        //先尝试添加自环
+        if (maxIdx[i] != -1) {
+            edges.push_back(graph[i][maxIdx[i]]);
+            maxIdx[i] = -1;
+        }
+        //然后添加其他边
+        for (int j: maxIdx) {
+            if (j != -1) {
+                edges.push_back(graph[i][j]);
+            }
+        }
+        graph[i].clear();
+        for (Edge &edge: edges) {
+            graph[i].push_back(edge);
+        }
+    }
+}
+
+void Graph::findMax(vector<string> &chain) {
+    //获取所有起点
+    queue<int> begin;
+    for (int i = 0; i < 26; i++) {
+        if (inDegree[i] == 0) {
+            begin.push(i);
+        }
+    }
+    while (!begin.empty()) {
+        int node = begin.front();
+        begin.pop();
+        vector<Edge *> newChain;
+        findMax(node, chain, newChain);
+    }
+}
+
+void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
+    //TODO -h
+    //无后继时链到达终点，可能为最长
+    if (this->graph[head].empty()) {
+        saveChain(chain, newChain);
+        return;
+    }
+    int i = 0;
+    //如果有自环则一定添加
+    if (this->graph[head][i].getTo() == head) {
+        newChain.push_back(&this->graph[head][i++]);
+        //只有一个自环边时的特判
+        if (this->graph[head].size() == 1) {
+            saveChain(chain, newChain);
+            newChain.pop_back();
+            return;
+        }
+    }
+    //递归遍历所有非自环边
+    while (i < this->graph[head].size()) {
+        newChain.push_back(&this->graph[head][i]);
+        findMax(this->graph[head][i].getTo(), chain, newChain);
+        newChain.pop_back();
+        i++;
+    }
+    if (this->graph[head][i].getTo() == head) {
+        newChain.pop_back();
+    };
+}
+
+void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
+    //TODO -h -t
+    if (this->graph[head].empty()) {
+        if (head == tail) {
+            saveChain(chain, newChain);
+        }
+        return;
+    }
+    int i = 0;
+    //如果有自环则一定添加
+    if (this->graph[head][i].getTo() == head) {
+        newChain.push_back(&this->graph[head][i++]);
+        //只有一个自环边时的特判
+        if (this->graph[head].size() == 1) {
+            if (head == tail) {
+                saveChain(chain, newChain);
+            }
+            newChain.pop_back();
+            return;
+        }
+    }
+    //递归遍历所有非自环边
+    while (i < this->graph[head].size()) {
+        newChain.push_back(&this->graph[head][i]);
+        findMax(this->graph[head][i].getTo(), chain, newChain);
+        newChain.pop_back();
+        i++;
+    }
+    if (this->graph[head][i].getTo() == head) {
+        newChain.pop_back();
+    };
+}
+
+void Graph::findMaxRecursive(vector<string> &chain) {
+    //TODO -r
+}
+
+void Graph::findMaxRecursive(int head, vector<string> &chain) {
+    //TODO -h -r
+}
+
+void Graph::findMaxRecursive(int head, int tail, vector<string> &chain) {
+    //TODO -h -t -r
+}
+
+int Graph::sum(vector<Edge *> &chain) {
+    int ans = 0;
+    for (Edge *edge: chain) {
+        ans += edge->getLen();
+    }
+    return ans;
+}
+
+void Graph::saveChain(vector<string> &chain, vector<Edge *> &edges) {
+    //必须长度大于2
+    if (edges.size() < 2) {
+        return;
+    }
+    int newChainLen = sum(edges);
+    if (newChainLen > this->chainMaxLen) {
+        this->chainMaxLen = newChainLen;
+    }
+    chain.clear();
+    for (Edge *edge: edges) {
+        chain.push_back(edge->getWord());
+    }
+}

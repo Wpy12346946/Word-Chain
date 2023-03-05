@@ -8,13 +8,82 @@
 vector<string> results;//保存要返回给调用方的所有字符串
 
 int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, bool enable_loop) {
-    return 0;
+    return genMaxchain(words, len, result, head, tail, enable_loop, false);
 }
+
+int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, bool enable_loop) {
+    return genMaxchain(words, len, result, head, tail, enable_loop, true);
+}
+
+int Core::genMaxchain(char *words[], int len, char *result[], char head, char tail, bool enable_loop, bool hasWeight) {
+    Graph graph;
+    graph.init();
+    results.clear();
+
+    bool reverse = head == '\0' && tail != '\0';
+    graph.makeGraph(words, len, hasWeight, reverse);
+    if (!enable_loop) {
+        if (graph.hasCircle()) {
+            //TODO 有环异常
+            return -1;
+        } else {
+            graph.simplify();
+            //TODO -j删除
+
+            if (head != '\0') {
+                if (tail != '\0') {
+                    vector<Edge *> newChain;
+                    graph.findMax(head - 'a', tail - 'a', results, newChain);
+                } else {
+                    vector<Edge *> newChain;
+                    graph.findMax(head - 'a', results, newChain);
+                }
+            } else if (tail != '\0') {
+                vector<Edge *> newChain;
+                graph.findMax(tail - 'a', results, newChain);
+            } else {
+                graph.findMax(results);
+            }
+        }
+    } else {
+        //TODO -j删除
+
+        if (head != '\0') {
+            if (tail != '\0') {
+                graph.findMaxRecursive(head - 'a', tail - 'a', results);
+            } else {
+                graph.findMaxRecursive(head - 'a', results);
+            }
+        } else if (tail != '\0') {
+            graph.findMaxRecursive(tail - 'a', results);
+        } else {
+            graph.findMaxRecursive(results);
+        }
+    }
+    //写入
+    int res = 0;
+    if (reverse) {
+        for (int i = results.size() - 1; i >= 0; i--) {
+            result[res++] = (char *) results[i].c_str();
+        }
+    } else {
+        for (string &s: results) {
+            result[res++] = (char *) s.c_str();
+        }
+    }
+
+    return res;
+}
+
 
 int Core::gen_chains_all(char *words[], int len, char *result[]) {
     Graph graph;
     graph.init();
     graph.makeGraph(words, len, false, false);
+    if (graph.hasCircle()) {
+        //TODO 有环时异常
+        return -1;
+    }
     vector<vector<string>> allChains;//TODO 考虑用指针来减少string拷贝的时间
     for (int i = 0; i < 26; i++) {
         vector<string> chain;
@@ -34,9 +103,9 @@ int Core::gen_chains_all(char *words[], int len, char *result[]) {
         results[res].pop_back();
         res++;
     }
-    res=0;
-    for(string &s:results){
-        result[res++]=(char *)s.c_str();
+    res = 0;
+    for (string &s: results) {
+        result[res++] = (char *) s.c_str();
     }
 
     return res;

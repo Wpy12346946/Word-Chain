@@ -8,8 +8,11 @@
 #include "Graph.h"
 
 class Core {
+private:
+    int genMaxchain(char *words[], int len, char *result[], char head, char tail, bool enable_loop, bool hasWeight);
 public:
     int gen_chain_word(char *words[], int len, char *result[], char head, char tail, bool enable_loop);
+    int gen_chain_char(char *words[], int len, char *result[], char head, char tail, bool enable_loop);
     int gen_chains_all(char *words[], int len, char *result[]);
 };
 
