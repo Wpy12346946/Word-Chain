@@ -178,7 +178,7 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
         newChain.pop_back();
         i++;
     }
-    if (this->graph[head][i].getTo() == head) {
+    if (this->graph[head][0].getTo() == head) {
         newChain.pop_back();
     }
 }
@@ -206,11 +206,11 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
     //递归遍历所有非自环边
     while (i < this->graph[head].size()) {
         newChain.push_back(&this->graph[head][i]);
-        findMax(this->graph[head][i].getTo(), chain, newChain);
+        findMax(this->graph[head][i].getTo(), tail, chain, newChain);
         newChain.pop_back();
         i++;
     }
-    if (this->graph[head][i].getTo() == head) {
+    if (this->graph[head][0].getTo() == head) {
         newChain.pop_back();
     };
 }
