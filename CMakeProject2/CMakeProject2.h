@@ -5,9 +5,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstring>
+#include <cctype>
 #include <vector>
 #include <string>
 #include "Graph.h"
+#include "Core.h"
 
 using namespace std;
 // TODO: 在此处引用程序需要的其他标头。
