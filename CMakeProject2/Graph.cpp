@@ -77,20 +77,9 @@ void Graph::deleteJ(char j, bool reverse) {
         return;
     }
     if (reverse) {
-        //翻转时只能遍历所有边的to来删除j节点
         for (int i = 0; i < 26; i++) {
-            bool flag = false;//记录节点i是否包含指向j节点的边
-            vector<Edge> edges;
-            for (Edge &edge: this->graph[i]) {
-                if (edge.getTo() == j - 'a') {
-                    flag = true;
-                } else {
-                    edges.push_back(edge);
-                }
-            }
-            if (flag) {
-                this->graph[i] = edges;
-            }
+            graph[i].erase(remove_if(graph[i].begin(), graph[i].end(), [j](Edge &s) { return s.getTo() == j - 'a'; }),
+                           graph[i].end());
         }
     } else {
         this->graph[j - 'a'].clear();
