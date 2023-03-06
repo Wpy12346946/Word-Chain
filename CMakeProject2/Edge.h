@@ -15,7 +15,7 @@ class Edge {
 	int to;
 	string word;//TODO 改成string *，避免拷贝构造
 	int len;
-	bool vis;
+	bool vis;//是否被访问过
 
 public:
 	Edge(string word, bool isWeight, bool reverse);

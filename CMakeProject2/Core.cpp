@@ -30,7 +30,7 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
         } else {
             graph.simplify();
             // -j删除
-            graph.deleteJ(reject, reject);
+            graph.deleteJ(reject, reverse);
 
             if (head != '\0') {
                 if (tail != '\0') {

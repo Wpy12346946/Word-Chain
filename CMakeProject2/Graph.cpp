@@ -189,7 +189,7 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
     }
     if (this->graph[head][i].getTo() == head) {
         newChain.pop_back();
-    };
+    }
 }
 
 void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
