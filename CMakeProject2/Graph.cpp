@@ -27,7 +27,7 @@ map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, b
 
 void Graph::addEdge(string word, bool isWeight, bool reverse) {
     Edge edge(word, isWeight, reverse);
-    //TODO 修改入度
+    // 修改入度
     if (edge.getFrom() != edge.getTo()) {
         inDegree[edge.getTo()]++;
     }
@@ -72,8 +72,29 @@ bool Graph::hasCircle() {
     return count_if(tmpInDegree.begin(), tmpInDegree.end(), [](int x) -> bool { return x != 0; }) != 0;
 }
 
-void Graph::deleteJ(char j) {
-
+void Graph::deleteJ(char j, bool reverse) {
+    if (j == '\0') {
+        return;
+    }
+    if (reverse) {
+        //翻转时只能遍历所有边的to来删除j节点
+        for (int i = 0; i < 26; i++) {
+            bool flag = false;//记录节点i是否包含指向j节点的边
+            vector<Edge> edges;
+            for (Edge &edge: this->graph[i]) {
+                if (edge.getTo() == j - 'a') {
+                    flag = true;
+                } else {
+                    edges.push_back(edge);
+                }
+            }
+            if (flag) {
+                this->graph[i] = edges;
+            }
+        }
+    } else {
+        this->graph[j - 'a'].clear();
+    }
 }
 
 //获取所有链并存到res中
@@ -141,7 +162,6 @@ void Graph::findMax(vector<string> &chain) {
 }
 
 void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
-    //TODO -h
     //无后继时链到达终点，可能为最长
     if (this->graph[head].empty()) {
         saveChain(chain, newChain);
@@ -171,7 +191,6 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
 }
 
 void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
-    //TODO -h -t
     if (this->graph[head].empty()) {
         if (head == tail) {
             saveChain(chain, newChain);

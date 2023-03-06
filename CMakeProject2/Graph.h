@@ -27,7 +27,7 @@ public:
 
     void simplify();// 所有边只保留最大的
 
-    void deleteJ(char j);//TODO 删除-j的边（如果参数为-t -j时如何处理最好）
+    void deleteJ(char j, bool reverse);//TODO 删除-j的边（如果参数为-t -j时如何处理最好）
 
     void findAll(int cur, vector<vector<string>> &res, vector<string> &chain);
 

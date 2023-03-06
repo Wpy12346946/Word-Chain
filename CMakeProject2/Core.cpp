@@ -7,15 +7,16 @@
 
 vector<string> results;//保存要返回给调用方的所有字符串
 
-int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, bool enable_loop) {
-    return genMaxchain(words, len, result, head, tail, enable_loop, false);
+int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
+    return genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
 }
 
-int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, bool enable_loop) {
-    return genMaxchain(words, len, result, head, tail, enable_loop, true);
+int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, char reject, bool enable_loop) {
+    return genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
 }
 
-int Core::genMaxchain(char *words[], int len, char *result[], char head, char tail, bool enable_loop, bool hasWeight) {
+int Core::genMaxchain(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop,
+                      bool hasWeight) {
     Graph graph;
     graph.init();
     results.clear();
@@ -28,7 +29,8 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
             return -1;
         } else {
             graph.simplify();
-            //TODO -j删除
+            // -j删除
+            graph.deleteJ(reject, reject);
 
             if (head != '\0') {
                 if (tail != '\0') {
@@ -43,7 +45,8 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
             }
         }
     } else {
-        //TODO -j删除
+        // -j删除
+        graph.deleteJ(reject, reverse);
 
         if (head != '\0') {
             if (tail != '\0') {
