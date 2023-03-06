@@ -16,7 +16,7 @@ map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, b
     vector<string> nRepeatWord;
     for (int i = 0; i < len; i++) {
         //TODO 重复单词的处理（先创建集合过滤所有重复单词?）
-        
+
         string word(words[i]);
         auto it = std::find(nRepeatWord.begin(), nRepeatWord.end(), word);
         if (it == nRepeatWord.end()) {
@@ -216,15 +216,97 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
 }
 
 void Graph::findMaxRecursive(vector<string> &chain) {
-    //TODO -r
+    queue<int> begin;
+    for (int i = 0; i < 26; i++) {
+        if (inDegree[i] == 0) {
+            begin.push(i);
+        }
+    }
+    while (!begin.empty()) {
+        int node = begin.front();
+        begin.pop();
+        vector<Edge *> newChain;
+        findMaxRecursive(node, chain, newChain);
+    }
 }
 
-void Graph::findMaxRecursive(int head, vector<string> &chain) {
+void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> newChain) {
     //TODO -h -r
+    //无后继时链到达终点，可能为最长
+    bool ans = true;
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].isVis()) {
+            ans = false;
+            break;
+        }
+    }
+    if (ans) {
+        saveChain(chain, newChain);
+        return;
+    }
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() == head && !this->graph[head][i].isVis()) {
+            newChain.push_back(&this->graph[head][i]);
+            this->graph[head][i].setVis(true);
+        }
+    }
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() != head && !this->graph[head][i].isVis()) {
+            newChain.push_back(&this->graph[head][i]);
+            this->graph[head][i].setVis(true);
+            findMaxRecursive(this->graph[head][i].getTo(), chain, newChain);
+            newChain.pop_back();
+            this->graph[head][i].setVis(false);
+        }
+    }
+    saveChain(chain, newChain);
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() == head) {
+            newChain.pop_back();
+            this->graph[head][i].setVis(false);
+        }
+    }
 }
 
-void Graph::findMaxRecursive(int head, int tail, vector<string> &chain) {
+void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
     //TODO -h -t -r
+    bool ans = true;
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].isVis()) {
+            ans = false;
+            break;
+        }
+    }
+    if (ans) {
+        if (head == tail) {
+            saveChain(chain, newChain);
+        }
+        return;
+    }
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() == head && !this->graph[head][i].isVis()) {
+            newChain.push_back(&this->graph[head][i]);
+            this->graph[head][i].setVis(true);
+        }
+    }
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() != head && !this->graph[head][i].isVis()) {
+            newChain.push_back(&this->graph[head][i]);
+            this->graph[head][i].setVis(true);
+            findMaxRecursive(this->graph[head][i].getTo(), tail, chain, newChain);
+            newChain.pop_back();
+            this->graph[head][i].setVis(false);
+        }
+    }
+    if (head == tail) {
+        saveChain(chain, newChain);
+    }
+    for (int i = 0; i < graph[head].size(); i++) {
+        if (this->graph[head][i].getTo() == head) {
+            newChain.pop_back();
+            this->graph[head][i].setVis(false);
+        }
+    }
 }
 
 int Graph::sum(vector<Edge *> &chain) {

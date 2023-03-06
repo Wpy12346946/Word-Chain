@@ -39,9 +39,9 @@ public:
 
     void findMaxRecursive(vector<string> &chain);
 
-    void findMaxRecursive(int head, vector<string> &chain);
+    void findMaxRecursive(int head, vector<string> &chain, vector<Edge *> newChain);
 
-    void findMaxRecursive(int head, int tail, vector<string> &chain);
+    void findMaxRecursive(int head, int tail, vector<string> &chain, vector<Edge *> newChain);
 
     int sum(vector<Edge *> &chain);
 

@@ -50,12 +50,12 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
 
         if (head != '\0') {
             if (tail != '\0') {
-                graph.findMaxRecursive(head - 'a', tail - 'a', results);
+                graph.findMaxRecursive(head - 'a', tail - 'a', results, vector<Edge *>());
             } else {
-                graph.findMaxRecursive(head - 'a', results);
+                graph.findMaxRecursive(head - 'a', results, vector<Edge *>());
             }
         } else if (tail != '\0') {
-            graph.findMaxRecursive(tail - 'a', results);
+            graph.findMaxRecursive(tail - 'a', results, vector<Edge *>());
         } else {
             graph.findMaxRecursive(results);
         }
