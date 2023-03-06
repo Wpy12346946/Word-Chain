@@ -102,7 +102,9 @@ void Graph::findAll(int cur, vector<vector<string>> &res, vector<string> &chain)
     for (Edge &edge: graph[cur]) {
         if (!edge.isVis()) {
             chain.push_back(edge.getWord());
-            res.push_back(chain);
+            if (chain.size() > 1) {
+                res.push_back(chain);
+            }
             edge.setVis(true);
             findAll(edge.getTo(), res, chain);
             chain.pop_back();
@@ -250,9 +252,9 @@ void Graph::saveChain(vector<string> &chain, vector<Edge *> &edges) {
     int newChainLen = sum(edges);
     if (newChainLen > this->chainMaxLen) {
         this->chainMaxLen = newChainLen;
-    }
-    chain.clear();
-    for (Edge *edge: edges) {
-        chain.push_back(edge->getWord());
+        chain.clear();
+        for (Edge *edge: edges) {
+            chain.push_back(edge->getWord());
+        }
     }
 }
