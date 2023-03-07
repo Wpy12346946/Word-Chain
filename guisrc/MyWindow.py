@@ -90,7 +90,7 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
     def findAll(self):
         results, length, times = gen_chains_all(self.showInputText.toPlainText())
         try:
-            self.timeLabel.setText("运行时间：" + str(round(times, 5)) + "秒")
+            self.timeLabel.setText("运行时间：" + str(round(times, 2)) + "秒")
             self.showOutputText.setText(results)
         except WordException:
             self.warnMessage("运行错误，出错原因：xxx")  # TODO
@@ -136,7 +136,7 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         try:
             results, length, times = function(self.showInputText.toPlainText(), ord(head[0]), ord(tail[0]),
                                               ord(reject[0]), enable_loop)
-            self.timeLabel.setText("运行时间：" + str(round(times, 5)) + "秒")
+            self.timeLabel.setText("运行时间：" + str(round(times, 2)) + "秒")
             self.showOutputText.setText(results)
         except WordException:
             self.warnMessage("运行错误，出错原因：xxx")  # TODO
