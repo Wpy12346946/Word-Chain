@@ -91,9 +91,11 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         results, length, times = gen_chains_all(self.showInputText.toPlainText())
         try:
             self.timeLabel.setText("运行时间：" + str(round(times, 5)) + "秒")
+            self.showOutputText.setText(results)
         except WordException:
             self.warnMessage("运行错误，出错原因：xxx")  # TODO
             self.timeLabel.setText("运行错误")
+            self.showOutputText.setText("")
 
     def findMaxWord(self):
         try:
@@ -135,6 +137,8 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
             results, length, times = function(self.showInputText.toPlainText(), ord(head[0]), ord(tail[0]),
                                               ord(reject[0]), enable_loop)
             self.timeLabel.setText("运行时间：" + str(round(times, 5)) + "秒")
+            self.showOutputText.setText(results)
         except WordException:
             self.warnMessage("运行错误，出错原因：xxx")  # TODO
             self.timeLabel.setText("运行错误")
+            self.showOutputText.setText("")
