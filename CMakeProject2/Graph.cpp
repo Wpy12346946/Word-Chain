@@ -13,15 +13,12 @@ void Graph::init() {
 }
 
 map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, bool reverse) {
-    vector<string> nRepeatWord;
+    set<string> nRepeatWord;
     for (int i = 0; i < len; i++) {
-        //TODO 重复单词的处理（先创建集合过滤所有重复单词?）
-
         string word(words[i]);
-        auto it = std::find(nRepeatWord.begin(), nRepeatWord.end(), word);
-        if (it == nRepeatWord.end()) {
+        if (nRepeatWord.find(word) == nRepeatWord.end()) {
             addEdge(word, isWeight, reverse);
-            nRepeatWord.push_back(word);
+            nRepeatWord.insert(word);
         }
     }
     return graph;
