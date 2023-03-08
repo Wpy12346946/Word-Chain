@@ -5,9 +5,9 @@
 #include <iostream>
 #include "Core.h"
 
-vector <string> results;//保存要返回给调用方的所有字符串
+vector<string> results;//保存要返回给调用方的所有字符串
 
-int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
+int gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
     int res;
     try {
         res = genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
@@ -17,7 +17,7 @@ int Core::gen_chain_word(char *words[], int len, char *result[], char head, char
     return res;
 }
 
-int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, char reject, bool enable_loop) {
+int gen_chain_char(char **words, int len, char **result, char head, char tail, char reject, bool enable_loop) {
     int res;
     try {
         res = genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
@@ -27,8 +27,8 @@ int Core::gen_chain_char(char **words, int len, char **result, char head, char t
     return res;
 }
 
-int Core::genMaxchain(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop,
-                      bool hasWeight) {
+int genMaxchain(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop,
+                bool hasWeight) {
     Graph graph;
     graph.init();
     results.clear();
@@ -87,16 +87,16 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
 }
 
 
-int Core::gen_chains_all(char *words[], int len, char *result[]) {
+int gen_chains_all(char *words[], int len, char *result[]) {
     Graph graph;
     graph.init();
     graph.makeGraph(words, len, false, false);
     if (graph.hasCircle()) {
         return WORD_CYCLE_EXCEPTION;
     }
-    vector <vector<string>> allChains;//TODO 考虑用指针来减少string拷贝的时间
+    vector<vector<string>> allChains;
     for (int i = 0; i < 26; i++) {
-        vector <string> chain;
+        vector<string> chain;
         try {
             graph.findAll(i, allChains, chain);
         } catch (int e) {
@@ -106,7 +106,7 @@ int Core::gen_chains_all(char *words[], int len, char *result[]) {
 
     results.clear();
     int res = 0;
-    for (vector <string> &chain: allChains) {
+    for (vector<string> &chain: allChains) {
         string s;
         results.emplace_back();
         for (string &word: chain) {
