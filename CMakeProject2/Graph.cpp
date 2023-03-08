@@ -164,12 +164,6 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
     //如果有自环则一定添加
     if (this->graph[head][i].getTo() == head) {
         newChain.push_back(&this->graph[head][i++]);
-        //只有一个自环边时的特判
-        if (this->graph[head].size() == 1) {
-            saveChain(chain, newChain);
-            newChain.pop_back();
-            return;
-        }
     }
     //递归遍历所有非自环边
     while (i < this->graph[head].size()) {
@@ -179,6 +173,10 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
         i++;
     }
     if (this->graph[head][0].getTo() == head) {
+        //只有一个自环边时的特判
+        if (this->graph[head].size() == 1) {
+            saveChain(chain, newChain);
+        }
         newChain.pop_back();
     }
 }
@@ -194,14 +192,6 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
     //如果有自环则一定添加
     if (this->graph[head][i].getTo() == head) {
         newChain.push_back(&this->graph[head][i++]);
-        //只有一个自环边时的特判
-        if (this->graph[head].size() == 1) {
-            if (head == tail) {
-                saveChain(chain, newChain);
-            }
-            newChain.pop_back();
-            return;
-        }
     }
     //递归遍历所有非自环边
     while (i < this->graph[head].size()) {
@@ -209,6 +199,9 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
         findMax(this->graph[head][i].getTo(), tail, chain, newChain);
         newChain.pop_back();
         i++;
+    }
+    if (head == tail) {
+        saveChain(chain, newChain);
     }
     if (this->graph[head][0].getTo() == head) {
         newChain.pop_back();
@@ -244,6 +237,7 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
         saveChain(chain, newChain);
         return;
     }
+    //TODO 可能的优化：node节点单独存储自环边，第一次到达时加入，省略每次遍历
     for (int i = 0; i < graph[head].size(); i++) {
         if (this->graph[head][i].getTo() == head && !this->graph[head][i].isVis()) {
             newChain.push_back(&this->graph[head][i]);
