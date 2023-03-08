@@ -13,7 +13,7 @@ void Graph::init() {
 }
 
 map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, bool reverse) {
-    set<string> nRepeatWord;
+    set <string> nRepeatWord;
     for (int i = 0; i < len; i++) {
         string word(words[i]);
         if (nRepeatWord.find(word) == nRepeatWord.end()) {
@@ -86,12 +86,15 @@ void Graph::deleteJ(char j, bool reverse) {
 }
 
 //获取所有链并存到res中
-void Graph::findAll(int cur, vector<vector<string>> &res, vector<string> &chain) {
+void Graph::findAll(int cur, vector <vector<string>> &res, vector <string> &chain) {
     for (Edge &edge: graph[cur]) {
         if (!edge.isVis()) {
             chain.push_back(edge.getWord());
             if (chain.size() > 1) {
                 res.push_back(chain);
+            }
+            if (res.size() > MAX_LENGTH) {
+                throw TOO_LONG_EXCEPTION;
             }
             edge.setVis(true);
             findAll(edge.getTo(), res, chain);
@@ -116,7 +119,7 @@ void Graph::simplify() {
                 maxIdx[edge.getTo()] = j;
             }
         }
-        vector<Edge> edges;
+        vector <Edge> edges;
         //先尝试添加自环
         if (maxIdx[i] != -1) {
             edges.push_back(graph[i][maxIdx[i]]);
@@ -135,7 +138,7 @@ void Graph::simplify() {
     }
 }
 
-void Graph::findMax(vector<string> &chain) {
+void Graph::findMax(vector <string> &chain) {
     //获取所有起点
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
@@ -146,12 +149,12 @@ void Graph::findMax(vector<string> &chain) {
     while (!begin.empty()) {
         int node = begin.front();
         begin.pop();
-        vector<Edge *> newChain;
+        vector < Edge * > newChain;
         findMax(node, chain, newChain);
     }
 }
 
-void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMax(int head, vector <string> &chain, vector<Edge *> newChain) {
     //无后继时链到达终点，可能为最长
     if (this->graph[head].empty()) {
         saveChain(chain, newChain);
@@ -178,7 +181,7 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
     }
 }
 
-void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMax(int head, int tail, vector <string> &chain, vector<Edge *> newChain) {
     if (this->graph[head].empty()) {
         if (head == tail) {
             saveChain(chain, newChain);
@@ -205,7 +208,7 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
     };
 }
 
-void Graph::findMaxRecursive(vector<string> &chain) {
+void Graph::findMaxRecursive(vector <string> &chain) {
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
         begin.push(i);
@@ -213,12 +216,12 @@ void Graph::findMaxRecursive(vector<string> &chain) {
     while (!begin.empty()) {
         int node = begin.front();
         begin.pop();
-        vector<Edge *> newChain;
+        vector < Edge * > newChain;
         findMaxRecursive(node, chain, newChain);
     }
 }
 
-void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMaxRecursive(int head, vector <string> &chain, vector<Edge *> newChain) {
     //无后继时链到达终点，可能为最长
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
@@ -260,7 +263,7 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
     }
 }
 
-void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMaxRecursive(int head, int tail, vector <string> &chain, vector<Edge *> newChain) {
     //TODO -h -t -r
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
@@ -313,10 +316,12 @@ int Graph::sum(vector<Edge *> &chain) {
     return ans;
 }
 
-void Graph::saveChain(vector<string> &chain, vector<Edge *> &edges) {
+void Graph::saveChain(vector <string> &chain, vector<Edge *> &edges) {
     //必须长度大于2
     if (edges.size() < 2) {
         return;
+    } else if(edges.size()>MAX_LENGTH){
+        throw TOO_LONG_EXCEPTION;
     }
     int newChainLen = sum(edges);
     if (newChainLen > this->chainMaxLen) {

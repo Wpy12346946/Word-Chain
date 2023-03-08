@@ -5,14 +5,24 @@
 #include <iostream>
 #include "Core.h"
 
-vector<string> results;//保存要返回给调用方的所有字符串
+vector <string> results;//保存要返回给调用方的所有字符串
 
 int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
-    return genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
+    try {
+        int res = genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
+    } catch (int e) {
+        return e;
+    }
+    return res;
 }
 
 int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, char reject, bool enable_loop) {
-    return genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
+    try {
+        int res = genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
+    } catch (int e) {
+        return e;
+    }
+    return res;
 }
 
 int Core::genMaxchain(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop,
@@ -25,8 +35,7 @@ int Core::genMaxchain(char *words[], int len, char *result[], char head, char ta
     graph.makeGraph(words, len, hasWeight, reverse);
     if (!enable_loop) {
         if (graph.hasCircle()) {
-            //TODO 有环异常
-            return -1;
+            return WORD_CYCLE_EXCEPTION;
         } else {
             graph.simplify();
             // -j删除
@@ -81,19 +90,21 @@ int Core::gen_chains_all(char *words[], int len, char *result[]) {
     graph.init();
     graph.makeGraph(words, len, false, false);
     if (graph.hasCircle()) {
-        //TODO 有环时异常
-        return -1;
+        return WORD_CYCLE_EXCEPTION;
     }
-    vector<vector<string>> allChains;//TODO 考虑用指针来减少string拷贝的时间
+    vector <vector<string>> allChains;//TODO 考虑用指针来减少string拷贝的时间
     for (int i = 0; i < 26; i++) {
-        vector<string> chain;
-        graph.findAll(i, allChains, chain);
+        vector <string> chain;
+        try {
+            graph.findAll(i, allChains, chain);
+        } catch (int e) {
+            return e;
+        }
     }
 
-    //TODO 总链数过多时异常
     results.clear();
     int res = 0;
-    for (vector<string> &chain: allChains) {
+    for (vector <string> &chain: allChains) {
         string s;
         results.emplace_back();
         for (string &word: chain) {

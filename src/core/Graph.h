@@ -7,6 +7,7 @@
 
 #include <map>
 #include "Edge.h"
+#include "Core.h"
 #include <vector>
 #include <set>
 #include <queue>
