@@ -211,9 +211,7 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
 void Graph::findMaxRecursive(vector<string> &chain) {
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
-        if (inDegree[i] == 0) {
-            begin.push(i);
-        }
+        begin.push(i);
     }
     while (!begin.empty()) {
         int node = begin.front();
@@ -224,11 +222,10 @@ void Graph::findMaxRecursive(vector<string> &chain) {
 }
 
 void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> newChain) {
-    //TODO -h -r
     //无后继时链到达终点，可能为最长
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
-        if (this->graph[head][i].isVis()) {
+        if (!this->graph[head][i].isVis()) {
             ans = false;
             break;
         }
@@ -238,10 +235,12 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
         return;
     }
     //TODO 可能的优化：node节点单独存储自环边，第一次到达时加入，省略每次遍历
+    bool flag = false;
     for (int i = 0; i < graph[head].size(); i++) {
         if (this->graph[head][i].getTo() == head && !this->graph[head][i].isVis()) {
             newChain.push_back(&this->graph[head][i]);
             this->graph[head][i].setVis(true);
+            flag = true;
         }
     }
     for (int i = 0; i < graph[head].size(); i++) {
@@ -253,11 +252,13 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
             this->graph[head][i].setVis(false);
         }
     }
-    saveChain(chain, newChain);
-    for (int i = 0; i < graph[head].size(); i++) {
-        if (this->graph[head][i].getTo() == head) {
-            newChain.pop_back();
-            this->graph[head][i].setVis(false);
+    if (flag) {
+        saveChain(chain, newChain);
+        for (int i = 0; i < graph[head].size(); i++) {
+            if (this->graph[head][i].getTo() == head) {
+                newChain.pop_back();
+                this->graph[head][i].setVis(false);
+            }
         }
     }
 }
@@ -266,7 +267,7 @@ void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<E
     //TODO -h -t -r
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
-        if (this->graph[head][i].isVis()) {
+        if (!this->graph[head][i].isVis()) {
             ans = false;
             break;
         }
@@ -277,10 +278,12 @@ void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<E
         }
         return;
     }
+    bool flag = false;
     for (int i = 0; i < graph[head].size(); i++) {
         if (this->graph[head][i].getTo() == head && !this->graph[head][i].isVis()) {
             newChain.push_back(&this->graph[head][i]);
             this->graph[head][i].setVis(true);
+            flag = true;
         }
     }
     for (int i = 0; i < graph[head].size(); i++) {
@@ -292,13 +295,15 @@ void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<E
             this->graph[head][i].setVis(false);
         }
     }
-    if (head == tail) {
-        saveChain(chain, newChain);
-    }
-    for (int i = 0; i < graph[head].size(); i++) {
-        if (this->graph[head][i].getTo() == head) {
-            newChain.pop_back();
-            this->graph[head][i].setVis(false);
+    if (flag) {
+        if (head == tail) {
+            saveChain(chain, newChain);
+        }
+        for (int i = 0; i < graph[head].size(); i++) {
+            if (this->graph[head][i].getTo() == head) {
+                newChain.pop_back();
+                this->graph[head][i].setVis(false);
+            }
         }
     }
 }
