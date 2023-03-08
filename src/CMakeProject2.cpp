@@ -30,15 +30,14 @@ void setPara(char &ch, int argc, char *argv[], int &idx) {
         throw -1;
     }
 
-    if (strlen(argv[idx]) > 1) {
-        //TODO 参数值过长
-        cout << "参数值过长" << endl;
+    if (!isalpha(argv[idx][0])) {
+        cout << "缺少参数值或参数值错误" << endl;
         throw -1;
     }
 
-    if (!isalpha(argv[idx][0])) {
-        //TODO 参数不是字母
-        cout << "参数值不是字母" << endl;
+    if (strlen(argv[idx]) > 1) {
+        //TODO 参数值过长
+        cout << "参数值过长" << endl;
         throw -1;
     }
 
@@ -111,7 +110,7 @@ void parseConflict() {
         cout << "指定了多个必选参数" << endl;//TODO
         throw -1;
     }
-    if (n && (h || t || j)) {
+    if (n && (h || t || j || r)) {
         cout << "参数n和可选参数混用" << endl;//TODO
         throw -1;
     }
@@ -121,7 +120,7 @@ void parseConflict() {
     }
 }
 
-char **readFile(ifstream &inputFile, vector<string> &wordList) {
+char **readFile(ifstream &inputFile, vector <string> &wordList) {
     string str;
     while (getline(inputFile, str)) {
         string word;
@@ -168,7 +167,7 @@ void debug() {
         return;
     }
 
-    vector<string> wordList;
+    vector <string> wordList;
     char **words = readFile(inputFile, wordList);
     int len = wordList.size();
 
@@ -180,43 +179,43 @@ void debug() {
 }
 
 int main(int argc, char *argv[]) {
-    debug();
-    return 0;
-//    char **words = nullptr;
-//    char **results = new char *[100000];
-//    try {
-//        parseArgs(argc, argv);
-//        parseConflict();
-//        ifstream inputFile(filename);
-//        if (!inputFile) {
-//            cerr << "can not to open input.txt" << endl;
-//            throw -1;
-//        }
-//        vector<string> wordList;
-//        words = readFile(inputFile, wordList);
-//        int len = wordList.size();
-//
-//        Core core;
-//        int resLen;//results长度
-//        if (n) {
-//            resLen = core.gen_chains_all(words, len, results);
-//        } else if (w) {
-//            resLen = core.gen_chain_word(words, len, results, h, t, j, r);
-//        } else {
-//            resLen = core.gen_chain_char(words, len, results, h, t, j, r);
-//        }
-//        // debug用，直接在控制台输出
-//        for (int i = 0; i < resLen; i++) {
-//            std::cout << results[i] << std::endl;
-//        }
-//        writeFile(results, resLen);
-//    } catch (int err) {
-//        cout << "excception found" << endl;
-//        return -1;
-//    }
-//
-//    delete[](words);
-//    delete[](results);
-//
+//    debug();
 //    return 0;
+    char **words = nullptr;
+    char **results = new char *[100000];
+    try {
+        parseArgs(argc, argv);
+        parseConflict();
+        ifstream inputFile(filename);
+        if (!inputFile) {
+            cerr << "文件不存在" << endl;
+            throw -1;
+        }
+        vector<string> wordList;
+        words = readFile(inputFile, wordList);
+        int len = wordList.size();
+
+        Core core;
+        int resLen;//results长度
+        if (n) {
+            resLen = core.gen_chains_all(words, len, results);
+        } else if (w) {
+            resLen = core.gen_chain_word(words, len, results, h, t, j, r);
+        } else {
+            resLen = core.gen_chain_char(words, len, results, h, t, j, r);
+        }
+        // debug用，直接在控制台输出
+        for (int i = 0; i < resLen; i++) {
+            std::cout << results[i] << std::endl;
+        }
+        writeFile(results, resLen);
+    } catch (int err) {
+        cout << "excception found" << endl;
+        return -1;
+    }
+
+    delete[](words);
+    delete[](results);
+
+    return 0;
 }

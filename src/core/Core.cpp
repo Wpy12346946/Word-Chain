@@ -8,8 +8,9 @@
 vector <string> results;//保存要返回给调用方的所有字符串
 
 int Core::gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
+    int res;
     try {
-        int res = genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
+        res = genMaxchain(words, len, result, head, tail, reject, enable_loop, false);
     } catch (int e) {
         return e;
     }
@@ -17,8 +18,9 @@ int Core::gen_chain_word(char *words[], int len, char *result[], char head, char
 }
 
 int Core::gen_chain_char(char **words, int len, char **result, char head, char tail, char reject, bool enable_loop) {
+    int res;
     try {
-        int res = genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
+        res = genMaxchain(words, len, result, head, tail, reject, enable_loop, true);
     } catch (int e) {
         return e;
     }

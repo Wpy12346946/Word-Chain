@@ -35,7 +35,7 @@ def gen_chain_word(words: str, head: int, tail: int, reject: int, enable_loop: b
     endTime = time.time()
     # TODO 异常处理
     if chainLen < 0:
-        raise WordException
+        raise WordException()
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
@@ -44,7 +44,7 @@ def gen_chain_word(words: str, head: int, tail: int, reject: int, enable_loop: b
 
 def gen_chain_char(words: str, head: int, tail: int, reject: int, enable_loop: bool):
     words, length = utils.split2bytes(words)
-    result = (c_char_p * 1000)()
+    result = (c_char_p * 200000)()
     head = c_char(head)
     tail = c_char(tail)
     reject = c_char(reject)
@@ -63,4 +63,14 @@ def gen_chain_char(words: str, head: int, tail: int, reject: int, enable_loop: b
 
 # TODO 异常处理
 class WordException(Exception):
-    pass
+    def __init__(self, errorCode):
+        super(self)
+        self.errorCode = errorCode
+
+    def __str__(self):
+        if self.errorCode == dll.WORD_CYCLE_EXCEPTION:
+            return "存在单词环"
+        elif self.errorCode == dll.TOO_LONG_EXCEPTION:
+            return "单词链过长"
+        else:
+            return "未知错误码" + str(self.errorCode)
