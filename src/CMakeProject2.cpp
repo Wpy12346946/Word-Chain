@@ -120,7 +120,7 @@ void parseConflict() {
     }
 }
 
-char **readFile(ifstream &inputFile, vector <string> &wordList) {
+char **readFile(ifstream &inputFile, vector<string> &wordList) {
     string str;
     while (getline(inputFile, str)) {
         string word;
@@ -161,13 +161,13 @@ void writeFile(char **results, int len) {
 }
 
 void debug() {
-    ifstream inputFile("D:\\college\\3-2\\software-engineering\\Word-Chain\\src\\input.txt");
+    ifstream inputFile("D:\\college\\3-2\\software-engineering\\Word-Chain\\input.txt");
     if (!inputFile) {
         cerr << "can not to open input.txt" << endl;
         return;
     }
 
-    vector <string> wordList;
+    vector<string> wordList;
     char **words = readFile(inputFile, wordList);
     int len = wordList.size();
 
@@ -178,8 +178,10 @@ void debug() {
     }
 }
 
+
 int main(int argc, char *argv[]) {
-//    debug();
+    cout << "111" << endl;
+    debug();
 //    return 0;
     char **words = nullptr;
     char **results = new char *[100000];
@@ -195,14 +197,13 @@ int main(int argc, char *argv[]) {
         words = readFile(inputFile, wordList);
         int len = wordList.size();
 
-        Core core;
         int resLen;//results长度
         if (n) {
-            resLen = core.gen_chains_all(words, len, results);
+            resLen = gen_chains_all(words, len, results);
         } else if (w) {
-            resLen = core.gen_chain_word(words, len, results, h, t, j, r);
+            resLen = gen_chain_word(words, len, results, h, t, j, r);
         } else {
-            resLen = core.gen_chain_char(words, len, results, h, t, j, r);
+            resLen = gen_chain_char(words, len, results, h, t, j, r);
         }
         // debug用，直接在控制台输出
         for (int i = 0; i < resLen; i++) {
