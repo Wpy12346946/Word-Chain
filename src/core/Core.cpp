@@ -6,7 +6,9 @@
 #include "Core.h"
 
 vector<string> results;//保存要返回给调用方的所有字符串
-
+int testy() {
+    return 1;
+}
 int gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
     int res;
     try {
