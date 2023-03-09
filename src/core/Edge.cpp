@@ -13,6 +13,7 @@ Edge::Edge(string word, bool isWeight, bool reverse) {
         this->to = word[word.length() - 1] - 'a';
     }
     this->len = isWeight ? word.length() : 1;
+    this->vis= false;
 }
 
 int Edge::getTo() {
