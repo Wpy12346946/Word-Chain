@@ -264,7 +264,6 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
 }
 
 void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
-    //TODO -h -t -r
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
         if (!this->graph[head][i].isVis()) {

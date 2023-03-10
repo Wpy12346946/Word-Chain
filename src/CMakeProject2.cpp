@@ -2,6 +2,8 @@
 
 using namespace std;
 
+const int WORD_CYCLE_EXCEPTION = 0x80000001;//有环异常
+const int TOO_LONG_EXCEPTION = 0x80000002;//链过长异常
 
 char *filename = nullptr;
 bool n, w, c, r;
@@ -15,8 +17,7 @@ bool isFile(char *str) {
 
 void setPara(bool &flag) {
     if (flag) {
-        //TODO 重复参数
-        cout << "存在重复参数" << endl;
+        error = "duplicated parameter detected";
         throw -1;
     }
     flag = true;
@@ -25,25 +26,22 @@ void setPara(bool &flag) {
 void setPara(char &ch, int argc, char *argv[], int &idx) {
     idx++;
     if (idx >= argc) {
-        //TODO -h-t-j缺少参数值
-        cout << "缺少参数值" << endl;
+        error = "required value of parameter -h -t -j not exist";
         throw -1;
     }
 
     if (!isalpha(argv[idx][0])) {
-        cout << "缺少参数值或参数值错误" << endl;
+        error = "wrong format of the value of parameter -h -t -j";
         throw -1;
     }
 
     if (strlen(argv[idx]) > 1) {
-        //TODO 参数值过长
-        cout << "参数值过长" << endl;
+        error = "wrong format of the value of parameter -h -t -j";
         throw -1;
     }
 
     if (ch != '\0') {
-        //TODO 重复参数
-        cout << "存在重复参数" << endl;
+        error = "duplicated parameter";
         throw -1;
     }
     ch = (char) tolower(argv[idx][0]);
@@ -56,15 +54,13 @@ void parseArgs(int argc, char *argv[]) {
             if (filename == nullptr) {
                 filename = arg;
             } else {
-                //TODO 多个文件名
-                cout << "检测到多个文件" << endl;
+                error = "duplicated filenames detected";
                 throw -1;
             }
         } else if (arg[0] == '-') {
             // 是参数
             if (arg[1] == '\0' || arg[2] != '\0') {
-                //TODO 未知参数格式
-                cout << "未知的参数" << endl;
+                error = "undefined parameter detected";
                 throw -1;
             }
             switch (arg[1]) {
@@ -90,13 +86,11 @@ void parseArgs(int argc, char *argv[]) {
                     setPara(r);
                     break;
                 default:
-                    //TODO 未知参数格式
-                    cout << "未知的参数" << endl;
+                    error = "undefined parameter detected";
                     throw -1;
             }
         } else {
-            //TODO 未知参数
-            cout << "未知参数" << endl;
+            error = "undefined parameter detected";
             throw -1;
         }
     }
@@ -104,18 +98,18 @@ void parseArgs(int argc, char *argv[]) {
 
 void parseConflict() {
     if (n + w + c == 0) {
-        cout << "未指定参数" << endl;//TODO
+        error = "required parameter not exist";
         throw -1;
     } else if (n + w + c > 1) {
-        cout << "指定了多个必选参数" << endl;//TODO
+        error = "parameter conflict";
         throw -1;
     }
     if (n && (h || t || j || r)) {
-        cout << "参数n和可选参数混用" << endl;//TODO
+        error = "parameter conflict";
         throw -1;
     }
     if (filename == nullptr) {
-        cout << "缺少文件名或文件名非法" << endl;//TODO
+        error = "required filename not exist";
         throw -1;
     }
 }
@@ -124,10 +118,10 @@ char **readFile(ifstream &inputFile, vector<string> &wordList) {
     string str;
     while (getline(inputFile, str)) {
         string word;
-        for (char c: str) {
-            if (isalpha(c)) {
-                c = tolower(c);
-                word += c;
+        for (char ch: str) {
+            if (isalpha(ch)) {
+                ch = tolower(ch);
+                word += ch;
             } else if (!word.empty()) {
                 wordList.push_back(word);
                 word.clear();
@@ -151,7 +145,7 @@ char **readFile(ifstream &inputFile, vector<string> &wordList) {
 void writeFile(char **results, int len) {
     ofstream outputFile("./solution.txt");
     if (!outputFile) {
-        cerr << "写入文件失败" << endl;
+        error = "write file fail";
         throw -1;
     }
     for (int i = 0; i < len; i++) {
@@ -161,7 +155,7 @@ void writeFile(char **results, int len) {
 }
 
 void debug() {
-    ifstream inputFile("D:\\college\\3-2\\software-engineering\\Word-Chain\\input.txt");
+    ifstream inputFile("E:\\coding\\C++\\VisualStudio\\Word-Chain\\input.txt");
     if (!inputFile) {
         cerr << "can not to open input.txt" << endl;
         return;
@@ -172,7 +166,8 @@ void debug() {
     int len = wordList.size();
 
     char **results = new char *[100];
-    int resLen = gen_chain_word(words, len, results, 'a', 'a', '\0', true);
+    int resLen = gen_chains_all(words, len, results);
+//    int resLen = gen_chain_word(words, len, results, 'a', 'a', '\0', true);
     for (int i = 0; i < resLen; i++) {
         std::cout << results[i] << std::endl;
     }
@@ -180,17 +175,16 @@ void debug() {
 
 
 int main(int argc, char *argv[]) {
-    cout << "111" << endl;
-    debug();
+//    debug();
 //    return 0;
     char **words = nullptr;
-    char **results = new char *[100000];
+    char **results = new char *[20000];
     try {
         parseArgs(argc, argv);
         parseConflict();
         ifstream inputFile(filename);
         if (!inputFile) {
-            cerr << "文件不存在" << endl;
+            cerr << "read file " << filename << " fail" << endl;
             throw -1;
         }
         vector<string> wordList;
@@ -205,14 +199,22 @@ int main(int argc, char *argv[]) {
         } else {
             resLen = gen_chain_char(words, len, results, h, t, j, r);
         }
+        if (resLen < 0) {
+            throw resLen;
+        }
         // debug用，直接在控制台输出
         for (int i = 0; i < resLen; i++) {
             std::cout << results[i] << std::endl;
         }
         writeFile(results, resLen);
     } catch (int err) {
-        cout << "excception found" << endl;
-        return -1;
+        if (err == WORD_CYCLE_EXCEPTION) {
+            error = "chain circle detected";
+        } else if (err == TOO_LONG_EXCEPTION) {
+            error = "too long chain";
+        }
+        cerr << "exception found: " << error << endl;
+        return err;
     }
 
     delete[](words);
