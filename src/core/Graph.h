@@ -10,6 +10,7 @@
 #include "Core.h"
 #include <vector>
 #include <set>
+#include <unordered_set>
 #include <queue>
 #include <algorithm>
 #include <string>
