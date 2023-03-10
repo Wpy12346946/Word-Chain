@@ -3,7 +3,10 @@ import time
 
 import utils
 
-dll = WinDLL(r".\\core.dll")
+# dll = WinDLL(r".\\core.dll")
+dll = WinDLL("E:\\coding\\C++\\VisualStudio\\Word-Chain\\src\\out\\build\\x64-Debug\\core.dll")
+WORD_CYCLE_EXCEPTION = 0x80000001
+TOO_LONG_EXCEPTION = 0x80000002
 
 
 def gen_chains_all(words: str):
@@ -13,9 +16,9 @@ def gen_chains_all(words: str):
     startTime = time.time()
     chainLen = dll.gen_chains_all(words, length, result)
     endTime = time.time()
-    # TODO 异常处理
+
     if chainLen < 0:
-        raise WordException
+        raise WordException(chainLen)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
@@ -33,9 +36,9 @@ def gen_chain_word(words: str, head: int, tail: int, reject: int, enable_loop: b
     startTime = time.time()
     chainLen = dll.gen_chain_word(words, length, result, head, tail, reject, enable_loop)
     endTime = time.time()
-    # TODO 异常处理
+
     if chainLen < 0:
-        raise WordException()
+        raise WordException(chainLen)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
@@ -52,25 +55,23 @@ def gen_chain_char(words: str, head: int, tail: int, reject: int, enable_loop: b
     startTime = time.time()
     chainLen = dll.gen_chain_char(words, length, result, head, tail, reject, enable_loop)
     endTime = time.time()
-    # TODO 异常处理
+
     if chainLen < 0:
-        raise WordException
+        raise WordException(chainLen)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
     return res, chainLen, times
 
 
-# TODO 异常处理
 class WordException(Exception):
     def __init__(self, errorCode):
-        super(self)
         self.errorCode = errorCode
 
     def __str__(self):
-        if self.errorCode == dll.WORD_CYCLE_EXCEPTION:
+        if self.errorCode & 0xffffffff == WORD_CYCLE_EXCEPTION:
             return "存在单词环"
-        elif self.errorCode == dll.TOO_LONG_EXCEPTION:
+        elif self.errorCode & 0xffffffff == TOO_LONG_EXCEPTION:
             return "单词链过长"
         else:
             return "未知错误码" + str(self.errorCode)

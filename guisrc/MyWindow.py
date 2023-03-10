@@ -1,10 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys
 import os
-from ctypes import *
-from time import time
 
 from window import Ui_MainWindow
 import utils
@@ -88,26 +85,20 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         messageBox.exec_()
 
     def findAll(self):
-        results, length, times = gen_chains_all(self.showInputText.toPlainText())
         try:
+            results, length, times = gen_chains_all(self.showInputText.toPlainText())
             self.timeLabel.setText("运行时间：" + str(round(times, 2)) + "秒")
             self.showOutputText.setText(results)
-        except WordException:
-            self.warnMessage("运行错误，出错原因：xxx")  # TODO
+        except WordException as e:
+            self.warnMessage("运行错误，出错原因：" + str(e))
             self.timeLabel.setText("运行错误")
             self.showOutputText.setText("")
 
     def findMaxWord(self):
-        try:
-            self.findMaxLen(gen_chain_word)
-        except -1:
-            self.warn("TODO ")  # TODO
+        self.findMaxLen(gen_chain_word)
 
     def findMaxChar(self):
-        try:
-            self.findMaxLen(gen_chain_char)
-        except -1:
-            self.warn("TODO ")  # TODO
+        self.findMaxLen(gen_chain_char)
 
     def findMaxLen(self, function):
         # 参数检查
@@ -138,7 +129,7 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
                                               ord(reject[0]), enable_loop)
             self.timeLabel.setText("运行时间：" + str(round(times, 2)) + "秒")
             self.showOutputText.setText(results)
-        except WordException:
-            self.warnMessage("运行错误，出错原因：xxx")  # TODO
+        except WordException as e:
+            self.warnMessage("运行错误，出错原因：" + str(e))
             self.timeLabel.setText("运行错误")
             self.showOutputText.setText("")
