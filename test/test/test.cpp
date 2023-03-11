@@ -30,8 +30,8 @@ namespace test {
 	TEST_CLASS(test) {
 	public:
 		void coreTest(int index) {
-			std::string dataFile = "../testfile/core/data" + std::to_string(index) + ".txt";
-			std::string paramFile = "../testfile/core/param" + std::to_string(index) + ".txt";
+			std::string dataFile = "../../testfile/core/data" + std::to_string(index) + ".txt";
+			std::string paramFile = "../../testfile/core/param" + std::to_string(index) + ".txt";
 			std::vector<std::string> wordList;
 			char **words = loadData(dataFile, wordList);
 			Config config;
@@ -57,8 +57,8 @@ namespace test {
 							tmpRes[j] = (char *)tmp[j].c_str();
 						}
 						if (cnt >= 0) {
-							chainCheck(result, cnt);
-							circleCheck(result, cnt);
+							chainCheck(tmpRes, cnt);
+							circleCheck(tmpRes, cnt);
 						}
 					}
 					break;
@@ -98,6 +98,7 @@ namespace test {
 
 		char **loadData(std::string filepath, std::vector<std::string> &wordList) {
 			std::ifstream inputFile(filepath);
+			Assert::IsTrue(inputFile.is_open());
 			std::string str;
 			while (getline(inputFile, str)) {
 				std::string word;
@@ -126,6 +127,7 @@ namespace test {
 
 		void loadConfig(std::string &filepath, Config &config) {
 			std::ifstream inputFile(filepath);
+			Assert::IsTrue(inputFile.is_open());
 			std::string str;
 			getline(inputFile, str);
 			config.api = str[0];
@@ -143,7 +145,7 @@ namespace test {
 
 
 		TEST_METHOD(TestMethod1) {
-			Assert::AreEqual(1, testy());
+			coreTest(1);
 		}
 	};
 }

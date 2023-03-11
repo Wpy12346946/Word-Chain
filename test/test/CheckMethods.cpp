@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "CheckMethods.h"
 
 const int WORD_CYCLE_EXCEPTION = 0x80000001;//”–ª∑“Ï≥£
