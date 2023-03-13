@@ -25,6 +25,7 @@ void coreTest(int index) {
                         tmp[cnt] += result[i][j];
                     }
                 }
+                cnt++;
                 char *tmpRes[20000];
                 for (int j = 0; j < cnt; j++) {
                     tmpRes[j] = (char *) tmp[j].c_str();
@@ -36,7 +37,7 @@ void coreTest(int index) {
             }
             break;
         case 'w':
-            res = gen_chain_word(words, wordList.size(), result, config.h, config.r, config.j, config.r);
+            res = gen_chain_word(words, wordList.size(), result, config.h, config.t, config.j, config.r);
             retCheck(res, config.ret);
             if (res >= 0) {
                 chainCheck(result, res);
@@ -49,7 +50,7 @@ void coreTest(int index) {
             }
             break;
         case 'c':
-            res = gen_chain_char(words, wordList.size(), result, config.h, config.r, config.j, config.r);
+            res = gen_chain_char(words, wordList.size(), result, config.h, config.t, config.j, config.r);
             retCheck(res, config.ret);
             if (res >= 0) {
                 chainCheck(result, res);

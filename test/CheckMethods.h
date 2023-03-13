@@ -7,15 +7,17 @@
 #include <vector>
 #include <cctype>
 
+#include "gtest/gtest.h"
 
-void retCheck(int res, int truth);//¼ì²é½Ó¿Ú·µ»ØÖµÊÇ·ñÕıÈ·
 
-void chainCheck(char *results[], int len);//¼ì²éµ¥´ÊÁ´³¤¶ÈºÍÁ´ÖĞÏàÁÚµ¥´ÊÊÇ·ñÂú×ã»ù±¾Ô¼Êø
+void retCheck(int res, int truth);//ï¿½ï¿½ï¿½Ó¿Ú·ï¿½ï¿½ï¿½Öµï¿½Ç·ï¿½ï¿½ï¿½È·
 
-void headCheck(char *results[], int len, char head);//¼ì²éÊÇ·ñÂú×ã-h²ÎÊı
+void chainCheck(char *results[], int len);//ï¿½ï¿½éµ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½
 
-void tailCheck(char *results[], int len, char tail);//¼ì²éÊÇ·ñÂú×ã-t²ÎÊı
+void headCheck(char *results[], int len, char head);//ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½-hï¿½ï¿½ï¿½ï¿½
 
-void rejectCheck(char *results[], int len, char rejectCheck);//¼ì²éÊÇ·ñÂú×ã-j²ÎÊı
+void tailCheck(char *results[], int len, char tail);//ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½-tï¿½ï¿½ï¿½ï¿½
 
-void circleCheck(char *results[], int len);//¼ì²éÎŞ-r²ÎÊıÊ±ÊÇ·ñÂú×ãÎŞ»·Ô¼Êø
+void rejectCheck(char *results[], int len, char rejectCheck);//ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½-jï¿½ï¿½ï¿½ï¿½
+
+void circleCheck(char *results[], int len);//ï¿½ï¿½ï¿½ï¿½ï¿½-rï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ş»ï¿½Ô¼ï¿½ï¿½
