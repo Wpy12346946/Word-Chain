@@ -123,4 +123,11 @@ TEST(test, TestMethod1) {
     coreTest(5);
     coreTest(6);
     coreTest(7);
+    coreTest(8);
+    coreTest(9);
+    coreTest(10);
+    coreTest(11);
+    coreTest(12);
+    coreTest(13);
+    coreTest(14);
 };
