@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.20)
+project(src)
+
+set(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#add_subdirectory(lib)
+##include_directories(googletest/include googletest)
+##link_directories(../bin)
+##add_executable(src test.cpp pch.cpp CheckMethods.cpp)
+##target_link_libraries(src gtest gtest_main core.dll)
+
+add_subdirectory(lib)
+include_directories(googletest/include googletest)
+add_executable(src test.cpp pch.cpp CheckMethods.cpp ../src/core/Core.cpp ../src/core/Edge.cpp ../src/core/Graph.cpp)
+target_link_libraries(src gtest gtest_main)
