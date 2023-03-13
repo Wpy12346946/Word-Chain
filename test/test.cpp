@@ -36,7 +36,7 @@ void coreTest(int index) {
             }
             break;
         case 'w':
-            res = gen_chain_word(words, wordList.size(), result, config.h, config.r, config.j, config.r);
+            res = gen_chain_word(words, wordList.size(), result, config.h, config.t, config.j, config.r);
             retCheck(res, config.ret);
             if (res >= 0) {
                 chainCheck(result, res);
@@ -49,7 +49,7 @@ void coreTest(int index) {
             }
             break;
         case 'c':
-            res = gen_chain_char(words, wordList.size(), result, config.h, config.r, config.j, config.r);
+            res = gen_chain_char(words, wordList.size(), result, config.h, config.t, config.j, config.r);
             retCheck(res, config.ret);
             if (res >= 0) {
                 chainCheck(result, res);
@@ -119,7 +119,7 @@ TEST(test, TestMethod1) {
     coreTest(2);
     coreTest(3);
     coreTest(4);
-//    coreTest(5);
-//    coreTest(6);
-//    coreTest(7);
+    coreTest(5);
+    coreTest(6);
+    coreTest(7);
 };
