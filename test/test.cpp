@@ -120,7 +120,7 @@ TEST(test, TestMethod1) {
     coreTest(2);
     coreTest(3);
     coreTest(4);
-//    coreTest(5);
-//    coreTest(6);
-//    coreTest(7);
+    coreTest(5);
+    coreTest(6);
+    coreTest(7);
 };
