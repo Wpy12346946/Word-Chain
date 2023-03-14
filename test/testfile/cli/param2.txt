@@ -1,0 +1,3 @@
+4
+-w
+../testfile/cli/data2.txt

@@ -1,0 +1,5 @@
+3
+-w
+-t
+t
+../testfile/cli/data5.txt

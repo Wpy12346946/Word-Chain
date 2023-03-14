@@ -1,0 +1,5 @@
+-2147418107
+-w
+-t
+wt
+../testfile/cli/data_cli_exception.txt

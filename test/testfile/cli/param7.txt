@@ -1,0 +1,4 @@
+4
+-w
+-r
+../testfile/cli/data7.txt

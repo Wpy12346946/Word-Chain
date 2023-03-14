@@ -1,0 +1,7 @@
+3
+-w
+-h
+a
+-j
+e
+../testfile/cli/data12.txt

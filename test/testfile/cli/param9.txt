@@ -1,0 +1,10 @@
+19
+-h
+a
+-c
+-t
+t
+-r
+-j
+e
+../testfile/cli/data9.txt

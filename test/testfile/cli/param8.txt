@@ -1,0 +1,10 @@
+19
+-r
+-w
+-h
+a
+-t
+t
+-j
+e
+../testfile/cli/data8.txt
