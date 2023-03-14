@@ -2,9 +2,6 @@
 
 using namespace std;
 
-const int WORD_CYCLE_EXCEPTION = 0x80000001;//有环异常
-const int TOO_LONG_EXCEPTION = 0x80000002;//链过长异常
-
 char *filename = nullptr;
 bool n, w, c, r;
 char h, t, j;
@@ -18,7 +15,7 @@ bool isFile(char *str) {
 void setPara(bool &flag) {
     if (flag) {
         error = "duplicated parameter detected";
-        throw -1;
+        throw DUPLICATE_PARAM_EXCEPTION;
     }
     flag = true;
 }
@@ -27,22 +24,22 @@ void setPara(char &ch, int argc, char *argv[], int &idx) {
     idx++;
     if (idx >= argc) {
         error = "required value of parameter -h -t -j not exist";
-        throw -1;
+        throw UNDEFINED_PARAM_EXCEPTION;
     }
 
     if (!isalpha(argv[idx][0])) {
         error = "wrong format of the value of parameter -h -t -j";
-        throw -1;
+        throw PARAM_FORMAT_EXCEPTION;
     }
 
     if (strlen(argv[idx]) > 1) {
         error = "wrong format of the value of parameter -h -t -j";
-        throw -1;
+        throw PARAM_FORMAT_EXCEPTION;
     }
 
     if (ch != '\0') {
         error = "duplicated parameter";
-        throw -1;
+        throw DUPLICATE_PARAM_EXCEPTION;
     }
     ch = (char) tolower(argv[idx][0]);
 }
@@ -55,13 +52,13 @@ void parseArgs(int argc, char *argv[]) {
                 filename = arg;
             } else {
                 error = "duplicated filenames detected";
-                throw -1;
+                throw DUPLICATE_FILE_EXCEPTION;
             }
         } else if (arg[0] == '-') {
             // 是参数
             if (arg[1] == '\0' || arg[2] != '\0') {
                 error = "undefined parameter detected";
-                throw -1;
+                throw UNDEFINED_PARAM_EXCEPTION;
             }
             switch (arg[1]) {
                 case 'n':
@@ -87,11 +84,11 @@ void parseArgs(int argc, char *argv[]) {
                     break;
                 default:
                     error = "undefined parameter detected";
-                    throw -1;
+                    throw UNDEFINED_PARAM_EXCEPTION;
             }
         } else {
             error = "undefined parameter detected";
-            throw -1;
+            throw UNDEFINED_PARAM_EXCEPTION;
         }
     }
 }
@@ -99,18 +96,18 @@ void parseArgs(int argc, char *argv[]) {
 void parseConflict() {
     if (n + w + c == 0) {
         error = "required parameter not exist";
-        throw -1;
+        throw LACK_PARAM_EXCEPTION;
     } else if (n + w + c > 1) {
         error = "parameter conflict";
-        throw -1;
+        throw CONFLICT_PARAM_EXCEPTION;
     }
     if (n && (h || t || j || r)) {
         error = "parameter conflict";
-        throw -1;
+        throw CONFLICT_PARAM_EXCEPTION;
     }
     if (filename == nullptr) {
         error = "required filename not exist";
-        throw -1;
+        throw LACK_FILE_EXCEPTION;
     }
 }
 
@@ -146,7 +143,7 @@ void writeFile(char **results, int len) {
     ofstream outputFile("./solution.txt");
     if (!outputFile) {
         error = "write file fail";
-        throw -1;
+        throw WRITE_FILE_EXCEPTION;
     }
     for (int i = 0; i < len; i++) {
         outputFile << results[i] << endl;
@@ -176,8 +173,8 @@ void debug() {
 
 
 int main(int argc, char *argv[]) {
-    debug();
-    return 0;
+//    debug();
+//    return 0;
     char **words = nullptr;
     char **results = new char *[20000];
     try {
@@ -186,7 +183,7 @@ int main(int argc, char *argv[]) {
         ifstream inputFile(filename);
         if (!inputFile) {
             cerr << "read file " << filename << " fail" << endl;
-            throw -1;
+            throw READ_FILE_EXCEPTION;
         }
         vector<string> wordList;
         words = readFile(inputFile, wordList);

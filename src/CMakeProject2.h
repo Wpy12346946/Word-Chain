@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 
+#include "Error.h"
+
 using namespace std;
 
 
