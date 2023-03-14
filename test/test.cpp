@@ -1,6 +1,7 @@
 #include "CheckMethods.h"
 #include "pch.h"
 #include "test.h"
+#include "../src/run.h"
 
 void coreTest(int index) {
     std::string dataFile = "../testfile/core/data" + std::to_string(index) + ".txt";
@@ -130,4 +131,6 @@ TEST(test, TestMethod1) {
     coreTest(12);
     coreTest(13);
     coreTest(14);
+    char *aaa[] = {};
+    run(1, aaa);
 };
