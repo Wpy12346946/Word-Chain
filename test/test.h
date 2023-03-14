@@ -1,4 +1,5 @@
 #include "../src/core/Core.h"
+#include "../src/run.h"
 
 //extern "C" __declspec(dllimport) int testy();
 //extern "C" __declspec(dllimport) int

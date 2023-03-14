@@ -1,7 +1,6 @@
 #include "CheckMethods.h"
 #include "pch.h"
 #include "test.h"
-#include "../src/run.h"
 
 void coreTest(int index) {
     std::string dataFile = "../testfile/core/data" + std::to_string(index) + ".txt";
@@ -64,11 +63,26 @@ void coreTest(int index) {
             }
             break;
     }
-
+    delete[]words;
 }
 
 void cliTest(int index) {
-
+    std::string configfile = "../testfile/cli/param" + std::to_string(index) + ".txt";
+    std::ifstream inputfile(configfile);
+    int argc = 1;
+    char *argv[20];
+    std::string str;
+    getline(inputfile, str);
+    int ans = atoi(str.c_str());
+    while (getline(inputfile, str)) {
+        char *arg = new char(str.size() + 1);
+        strcpy_s(arg, str.size() + 1, str.c_str());
+        argv[argc++] = arg;
+    }
+    EXPECT_EQ(ans, run(argc, argv));
+//    for (int i = 1; i < argc; i++) {
+//        delete argv[i];
+//    }
 }
 
 char **loadData(std::string filepath, std::vector<std::string> &wordList) {
@@ -116,21 +130,13 @@ void loadConfig(std::string &filepath, Config &config) {
 }
 
 TEST(test, TestMethod1) {
-    EXPECT_EQ(1, testy());
-    coreTest(1);
-    coreTest(2);
-    coreTest(3);
-    coreTest(4);
-    coreTest(5);
-    coreTest(6);
-    coreTest(7);
-    coreTest(8);
-    coreTest(9);
-    coreTest(10);
-    coreTest(11);
-    coreTest(12);
-    coreTest(13);
-    coreTest(14);
-    char *aaa[] = {};
-    run(1, aaa);
+    for (int i = 1; i <= 16; i++) {
+        coreTest(i);
+    }
+    for (int i = 1; i <= 14; i++) {
+        cliTest(i);
+    }
+    for (int i = 20; i <= 50; i++) {
+        cliTest(i);
+    }
 };

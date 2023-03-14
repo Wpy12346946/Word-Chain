@@ -7,6 +7,17 @@ bool n, w, c, r;
 char h, t, j;
 string error;//保存错误信息
 
+void init() {
+    filename = nullptr;
+    n= false;
+    w= false;
+    c= false;
+    r = false;
+    h = '\0';
+    t = '\0';
+    j = '\0';
+}
+
 bool isFile(char *str) {
     int len = strlen(str);
     return len >= 4 && strcmp(str + len - 4, ".txt") == 0;
@@ -151,36 +162,38 @@ void writeFile(char **results, int len) {
     outputFile.close();
 }
 
-void debug() {
-    ifstream inputFile("E:\\coding\\C++\\VisualStudio\\Word-Chain\\input.txt");
-    if (!inputFile) {
-        cerr << "can not to open input.txt" << endl;
-        return;
-    }
-
-    vector<string> wordList;
-    char **words = readFile(inputFile, wordList);
-    int len = wordList.size();
-
-    char **results = new char *[100];
-    int resLen = gen_chains_all(words, len, results);
-//    int resLen = gen_chain_word(words, len, results, '\0', '\0', '\0', true);
-    cout << resLen << endl;
-    for (int i = 0; i < resLen; i++) {
-        std::cout << results[i] << std::endl;
-    }
-}
+//void debug() {
+//    ifstream inputFile("E:\\coding\\C++\\VisualStudio\\Word-Chain\\input.txt");
+//    if (!inputFile) {
+//        cerr << "can not to open input.txt" << endl;
+//        return;
+//    }
+//
+//    vector<string> wordList;
+//    char **words = readFile(inputFile, wordList);
+//    int len = wordList.size();
+//
+//    char **results = new char *[100];
+//    int resLen = gen_chains_all(words, len, results);
+////    int resLen = gen_chain_word(words, len, results, '\0', '\0', '\0', true);
+//    cout << resLen << endl;
+//    for (int i = 0; i < resLen; i++) {
+//        std::cout << results[i] << std::endl;
+//    }
+//}
 
 int run(int argc, char *argv[]) {
 //    debug();
 //    return 0;
     char **words = nullptr;
-    char **results = new char *[20000];
+    char *results[20000];
+    int resLen;//results长度
     try {
+        init();
         parseArgs(argc, argv);
         parseConflict();
         ifstream inputFile(filename);
-        if (!inputFile) {
+        if (!inputFile.is_open()) {
             cerr << "read file " << filename << " fail" << endl;
             throw READ_FILE_EXCEPTION;
         }
@@ -188,7 +201,6 @@ int run(int argc, char *argv[]) {
         words = readFile(inputFile, wordList);
         int len = wordList.size();
 
-        int resLen;//results长度
         if (n) {
             resLen = gen_chains_all(words, len, results);
         } else if (w) {
@@ -200,9 +212,9 @@ int run(int argc, char *argv[]) {
             throw resLen;
         }
         // debug用，直接在控制台输出
-        for (int i = 0; i < resLen; i++) {
-            std::cout << results[i] << std::endl;
-        }
+//        for (int i = 0; i < resLen; i++) {
+//            std::cout << results[i] << std::endl;
+//        }
         writeFile(results, resLen);
     } catch (int err) {
         if (err == WORD_CYCLE_EXCEPTION) {
@@ -212,11 +224,9 @@ int run(int argc, char *argv[]) {
         }
         cerr << "exception found: " << error << endl;
         delete[](words);
-        delete[](results);
         return err;
     }
 
     delete[](words);
-    delete[](results);
-    return 0;
+    return resLen;
 }
