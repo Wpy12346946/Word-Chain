@@ -18,7 +18,7 @@ class Edge {
 	bool vis;//是否被访问过
 
 public:
-	Edge(string word, bool isWeight, bool reverse);
+	Edge(string &word, bool isWeight, bool reverse);
 
 	int getTo();
 
@@ -26,7 +26,7 @@ public:
 
     int getLen();
 
-	string &getWord();
+	string *getWord();
 
 	void setVis(bool vis);
 

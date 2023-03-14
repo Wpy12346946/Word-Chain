@@ -24,7 +24,7 @@ map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, b
     return graph;
 }
 
-void Graph::addEdge(string word, bool isWeight, bool reverse) {
+void Graph::addEdge(string &word, bool isWeight, bool reverse) {
     Edge edge(word, isWeight, reverse);
     // 修改入度
     if (edge.getFrom() != edge.getTo()) {
@@ -96,7 +96,7 @@ void Graph::deleteJ(char j, bool reverse) {
 }
 
 //获取所有链并存到res中
-void Graph::findAll(int cur, vector<vector<string>> &res, vector<string> &chain) {
+void Graph::findAll(int cur, vector<vector<string*>> &res, vector<string*> &chain) {
     for (Edge &edge: graph[cur]) {
         if (!edge.isVis()) {
             chain.push_back(edge.getWord());
@@ -148,7 +148,7 @@ void Graph::simplify() {
     }
 }
 
-void Graph::findMax(vector<string> &chain) {
+void Graph::findMax(vector<string*> &chain) {
     //获取所有起点
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
@@ -164,7 +164,7 @@ void Graph::findMax(vector<string> &chain) {
     }
 }
 
-void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMax(int head, vector<string*> &chain, vector<Edge *> newChain) {
     //无后继时链到达终点，可能为最长
     if (this->graph[head].empty()) {
         saveChain(chain, newChain);
@@ -191,7 +191,7 @@ void Graph::findMax(int head, vector<string> &chain, vector<Edge *> newChain) {
     }
 }
 
-void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMax(int head, int tail, vector<string*> &chain, vector<Edge *> newChain) {
     if (this->graph[head].empty()) {
         if (head == tail) {
             saveChain(chain, newChain);
@@ -218,7 +218,7 @@ void Graph::findMax(int head, int tail, vector<string> &chain, vector<Edge *> ne
     };
 }
 
-void Graph::findMaxRecursive(vector<string> &chain) {
+void Graph::findMaxRecursive(vector<string*> &chain) {
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
         begin.push(i);
@@ -231,7 +231,7 @@ void Graph::findMaxRecursive(vector<string> &chain) {
     }
 }
 
-void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMaxRecursive(int head, vector<string*> &chain, vector<Edge *> newChain) {
     //无后继时链到达终点，可能为最长
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
@@ -273,7 +273,7 @@ void Graph::findMaxRecursive(int head, vector<string> &chain, vector<Edge *> new
     }
 }
 
-void Graph::findMaxRecursive(int head, int tail, vector<string> &chain, vector<Edge *> newChain) {
+void Graph::findMaxRecursive(int head, int tail, vector<string*> &chain, vector<Edge *> newChain) {
     bool ans = true;
     for (int i = 0; i < graph[head].size(); i++) {
         if (!this->graph[head][i].isVis()) {
@@ -325,7 +325,7 @@ int Graph::sum(vector<Edge *> &chain) {
     return ans;
 }
 
-void Graph::saveChain(vector<string> &chain, vector<Edge *> &edges) {
+void Graph::saveChain(vector<string*> &chain, vector<Edge *> &edges) {
     //必须长度大于2
     if (edges.size() < 2) {
         return;

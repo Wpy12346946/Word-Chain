@@ -3,7 +3,7 @@
 //
 #include "Edge.h"
 
-Edge::Edge(string word, bool isWeight, bool reverse) {
+Edge::Edge(string &word, bool isWeight, bool reverse) {
     this->word = word;
     if (reverse) {
         this->from = word[word.length() - 1] - 'a';
@@ -24,8 +24,8 @@ int Edge::getFrom() {
     return from;
 }
 
-string &Edge::getWord() {
-    return word;
+string *Edge::getWord() {
+    return &word;
 }
 
 void Edge::setVis(bool vis) {

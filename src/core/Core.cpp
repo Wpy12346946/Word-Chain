@@ -5,7 +5,8 @@
 #include <iostream>
 #include "Core.h"
 
-vector<string> results;//保存要返回给调用方的所有字符串
+vector<string> stores;//保存要返回给调用方的所有字符串
+vector<string*> results;
 int testy() {
     return 1;
 }
@@ -35,6 +36,7 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
     Graph graph;
     graph.init();
     results.clear();
+    stores.clear();
 
     bool reverse = head == '\0' && tail != '\0';
     graph.makeGraph(words, len, hasWeight, reverse);
@@ -78,10 +80,14 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
     int res = 0;
     if (reverse) {
         for (int i = results.size() - 1; i >= 0; i--) {
-            result[res++] = (char *) results[i].c_str();
+            stores.push_back(*results[i]);
+            result[res++] = (char *) stores.back().c_str();
         }
     } else {
-        for (string &s: results) {
+        for (string *s: results) {
+            stores.push_back(*s);
+        }
+        for (string &s:stores){
             result[res++] = (char *) s.c_str();
         }
     }
@@ -97,9 +103,9 @@ int gen_chains_all(char *words[], int len, char *result[]) {
     if (graph.hasCircle()) {
         return WORD_CYCLE_EXCEPTION;
     }
-    vector<vector<string>> allChains;
+    vector<vector<string*>> allChains;
     for (int i = 0; i < 26; i++) {
-        vector<string> chain;
+        vector<string*> chain;
         try {
             graph.findAll(i, allChains, chain);
         } catch (int e) {
@@ -108,19 +114,20 @@ int gen_chains_all(char *words[], int len, char *result[]) {
     }
 
     results.clear();
+    stores.clear();
     int res = 0;
-    for (vector<string> &chain: allChains) {
+    for (vector<string*> &chain: allChains) {
         string s;
-        results.emplace_back();
-        for (string &word: chain) {
-            results[res] += word;
-            results[res] += " ";
+        stores.emplace_back();
+        for (string *word: chain) {
+            stores[res] += *word;
+            stores[res] += " ";
         }
-        results[res].pop_back();
+        stores[res].pop_back();
         res++;
     }
     res = 0;
-    for (string &s: results) {
+    for (string &s: stores) {
         result[res++] = (char *) s.c_str();
     }
 
