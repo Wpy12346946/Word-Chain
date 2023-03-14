@@ -76,11 +76,21 @@ void Graph::deleteJ(char j, bool reverse) {
         return;
     }
     if (reverse) {
+        for (Edge edge: this->graph[j - 'a']) {
+            if (edge.getTo() != edge.getFrom()) {
+                this->inDegree[edge.getTo()]--;
+            }
+        }
         for (int i = 0; i < 26; i++) {
             graph[i].erase(remove_if(graph[i].begin(), graph[i].end(), [j](Edge &s) { return s.getTo() == j - 'a'; }),
                            graph[i].end());
         }
     } else {
+        for (Edge edge: this->graph[j - 'a']) {
+            if (edge.getTo() != edge.getFrom()) {
+                this->inDegree[edge.getTo()]--;
+            }
+        }
         this->graph[j - 'a'].clear();
     }
 }
