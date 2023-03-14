@@ -24,7 +24,7 @@ void setPara(char &ch, int argc, char *argv[], int &idx) {
     idx++;
     if (idx >= argc) {
         error = "required value of parameter -h -t -j not exist";
-        throw UNDEFINED_PARAM_EXCEPTION;
+        throw PARAM_FORMAT_EXCEPTION;
     }
 
     if (!isalpha(argv[idx][0])) {
@@ -163,8 +163,8 @@ void debug() {
     int len = wordList.size();
 
     char **results = new char *[100];
-//    int resLen = gen_chains_all(words, len, results);
-    int resLen = gen_chain_word(words, len, results, '\0', '\0', '\0', true);
+    int resLen = gen_chains_all(words, len, results);
+//    int resLen = gen_chain_word(words, len, results, '\0', '\0', '\0', true);
     cout << resLen << endl;
     for (int i = 0; i < resLen; i++) {
         std::cout << results[i] << std::endl;
@@ -172,8 +172,8 @@ void debug() {
 }
 
 int run(int argc, char *argv[]) {
-    debug();
-    return 0;
+//    debug();
+//    return 0;
     char **words = nullptr;
     char **results = new char *[20000];
     try {
@@ -211,6 +211,8 @@ int run(int argc, char *argv[]) {
             error = "too long chain";
         }
         cerr << "exception found: " << error << endl;
+        delete[](words);
+        delete[](results);
         return err;
     }
 
