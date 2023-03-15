@@ -194,7 +194,7 @@ class Ui_MainWindow(object):
         self.allowHeadButton.setText(_translate("MainWindow", "以"))
         self.label_4.setText(_translate("MainWindow", "开头"))
         self.allowTailButton.setText(_translate("MainWindow", "以"))
-        self.label_5.setText(_translate("MainWindow", "开头"))
+        self.label_5.setText(_translate("MainWindow", "结尾"))
         self.allowRejectButton.setText(_translate("MainWindow", "禁止"))
         self.label_3.setText(_translate("MainWindow", "开头"))
         self.allowCircleButton.setText(_translate("MainWindow", "允许单词环"))
