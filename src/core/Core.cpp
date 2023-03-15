@@ -64,6 +64,8 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
         // -j删除
         graph.deleteJ(reject, reverse);
 
+        graph.tarjan();
+
         if (head != '\0') {
             if (tail != '\0') {
                 graph.findMaxRecursive(head - 'a', tail - 'a', results, vector<Edge *>());

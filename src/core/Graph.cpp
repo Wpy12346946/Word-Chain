@@ -169,6 +169,64 @@ void Graph::simplify() {
     }
 }
 
+void Graph::tarjan() {
+    //tarjan
+    int dfn[26] = {0}, low[26] = {0};
+    bool inStack[26] = {false};
+    stack<int> st;
+    int cnt = 0;
+    for (int i = 0; i < 26; i++) {
+        if (dfn[i] == 0) {
+            tarjanDFS(i, cnt, dfn, low, inStack, st);
+        }
+    }
+    //删除掉非强连通分量间的所有重边
+    for (int i = 0; i < 26; i++) {
+        Edge *edges[26] = {nullptr};
+        vector<Edge> newEdges;
+        for (Edge &edge: this->graph[i]) {
+            if (scc[i] != scc[edge.getTo()]) {
+                int to = edge.getTo();
+                if (edges[to] == nullptr || edges[to]->getLen() < edge.getLen()) {
+                    edges[to] = &edge;
+                }
+            } else {
+                newEdges.push_back(edge);
+            }
+        }
+        for (Edge *&edge: edges) {
+            if (edge != nullptr) {
+                newEdges.push_back(*edge);
+            }
+        }
+        this->graph[i] = newEdges;
+    }
+}
+
+void Graph::tarjanDFS(int x, int &cnt, int dfn[], int low[], bool inStack[], stack<int> &st) {
+    st.push(x);
+    inStack[x] = true;
+    dfn[x] = low[x] = cnt++;
+    for (Edge &edge: this->graph[x]) {
+        if (!dfn[edge.getTo()]) {
+            tarjanDFS(edge.getTo(), cnt, dfn, low, inStack, st);
+            low[x] = min(low[x], low[edge.getTo()]);
+        } else if (inStack[edge.getTo()]) {
+            low[x] = min(low[x], dfn[edge.getTo()]);
+        }
+    }
+    if (dfn[x] == low[x]) {
+        while (st.top() != x) {
+            scc[st.top()] = low[x];
+            inStack[st.top()] = false;
+            st.pop();
+        }
+        scc[x] = x;
+        inStack[st.top()] = false;
+        st.pop();
+    }
+}
+
 void Graph::findMax(vector<string *> &chain) {
     //获取所有起点
     queue<int> begin;
