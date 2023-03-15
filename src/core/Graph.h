@@ -16,7 +16,8 @@
 #include <string>
 
 class Graph {
-    map<int, vector<Edge>> graph;
+    map<int, vector<Edge>> graph;//储存非自环边
+    map<int, vector<Edge>> selfCircle;//储存自环边;
     vector<bool>visited;
     int inDegree[26] = {0};//记录每个点（不含自环）的入度
     int chainMaxLen = 0;//最大链长度
@@ -45,7 +46,7 @@ public:
 
     void findMaxRecursive(int head, vector<string*> &chain, vector<Edge *> newChain);
 
-    void findMaxRecursive(int head, int tail, vector<string*> &chain, vector<Edge *> newChain);
+    bool findMaxRecursive(int head, int tail, vector<string*> &chain, vector<Edge *> newChain);
 
     int sum(vector<Edge *> &chain);
 
