@@ -17,6 +17,7 @@
 
 class Graph {
     map<int, vector<Edge>> graph;
+    vector<bool>visited;
     int inDegree[26] = {0};//记录每个点（不含自环）的入度
     int chainMaxLen = 0;//最大链长度
 public:
