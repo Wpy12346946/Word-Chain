@@ -9,9 +9,9 @@ string error;//保存错误信息
 
 void init() {
     filename = nullptr;
-    n= false;
-    w= false;
-    c= false;
+    n = false;
+    w = false;
+    c = false;
     r = false;
     h = '\0';
     t = '\0';
@@ -155,6 +155,9 @@ void writeFile(char **results, int len) {
     if (!outputFile) {
         error = "write file fail";
         throw WRITE_FILE_EXCEPTION;
+    }
+    if (n) {
+        outputFile << len << endl;
     }
     for (int i = 0; i < len; i++) {
         outputFile << results[i] << endl;
