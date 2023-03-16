@@ -360,14 +360,8 @@ bool Graph::findMaxRecursive(int head, int tail, vector<string *> &chain, vector
             break;
         }
     }
-    if (ans) {
-        //到达终点，只有当前节点是-t的参数时才保存
-        if (head == tail) {
-            saveChain(chain, newChain);
-            return true;
-        }
-        return false;
-    } else {
+
+    if (!ans) {
         for (int i = 0; i < graph[head].size(); i++) {
             if (!this->graph[head][i].isVis()) {
                 newChain.push_back(&this->graph[head][i]);
