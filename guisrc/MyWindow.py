@@ -88,7 +88,7 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         try:
             results, length, times = gen_chains_all(self.showInputText.toPlainText())
             self.timeLabel.setText("运行时间：" + str(round(times, 2)) + "秒")
-            self.showOutputText.setText(results)
+            self.showOutputText.setText(str(length) + "\n" + results)
         except WordException as e:
             self.warnMessage("运行错误，出错原因：" + str(e))
             self.timeLabel.setText("运行错误")
@@ -102,17 +102,29 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
 
     def findMaxLen(self, function):
         # 参数检查
-        if self.allowHeadButton.isChecked() and not self.headText.text():
-            self.warnMessage("请输入h参数")
-            return
-        if self.allowTailButton.isChecked() and not self.tailText.text():
-            self.warnMessage("请输入t参数")
-            return
-        if self.allowRejectButton.isChecked() and not self.rejectText.text():
-            self.warnMessage("请输入j参数")
-            return
+        if self.allowHeadButton.isChecked():
+            if not self.headText.text():
+                self.warnMessage("请输入h参数")
+                return
+            elif not self.headText.text().isalpha():
+                self.warnMessage("h参数需要为字母")
+                return
+        if self.allowTailButton.isChecked():
+            if not self.tailText.text():
+                self.warnMessage("请输入t参数")
+                return
+            elif not self.tailText.text().isalpha():
+                self.warnMessage("t参数需要为字母")
+                return
+        if self.allowRejectButton.isChecked():
+            if not self.rejectText.text():
+                self.warnMessage("请输入j参数")
+                return
+            elif not self.rejectText.text().isalpha():
+                self.warnMessage("j参数需要为字母")
+                return
 
-        # 参数设置
+                # 参数设置
         head = '\0'
         if self.allowHeadButton.isChecked():
             head = self.headText.text()
