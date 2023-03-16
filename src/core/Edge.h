@@ -11,26 +11,14 @@
 using namespace std;
 
 class Edge {
+public:
     int from;
     int to;
     string word;
     int len;
     bool vis;//是否被访问过
 
-public:
     Edge(string &word, bool isWeight, bool reverse);
-
-    int getTo();
-
-    int getFrom();
-
-    int getLen();
-
-    string *getWord();
-
-    void setVis(bool vis);
-
-    bool isVis();
 };
 
 

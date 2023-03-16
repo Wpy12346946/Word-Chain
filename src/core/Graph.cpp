@@ -14,7 +14,8 @@ void Graph::init() {
     }
 }
 
-map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, bool reverse) {
+void Graph::makeGraph(char *words[], int len, bool isWeight, bool reverse) {
+    this->isChar = isWeight;
     unordered_set<string> nRepeatWord;
     for (int i = 0; i < len; i++) {
         string word(words[i]);
@@ -23,14 +24,13 @@ map<int, vector<Edge>> Graph::makeGraph(char *words[], int len, bool isWeight, b
             nRepeatWord.insert(word);
         }
     }
-    return graph;
 }
 
 void Graph::addEdge(string &word, bool isWeight, bool reverse) {
     Edge edge(word, isWeight, reverse);
     // 修改入度
-    if (edge.getFrom() != edge.getTo()) {
-        inDegree[edge.getTo()]++;
+    if (edge.from != edge.to) {
+        inDegree[edge.to]++;
         if (reverse) {
             graph[word[word.length() - 1] - 'a'].push_back(edge);
         } else {
@@ -60,9 +60,9 @@ bool Graph::hasCircle() {
         int node = begin.front();
         begin.pop();
         for (Edge &edge: graph[node]) {
-            tmpInDegree[edge.getTo()]--;
-            if (tmpInDegree[edge.getTo()] == 0) {
-                begin.push(edge.getTo());
+            tmpInDegree[edge.to]--;
+            if (tmpInDegree[edge.to] == 0) {
+                begin.push(edge.to);
             }
         }
     }
@@ -76,19 +76,14 @@ void Graph::deleteJ(char j, bool reverse) {
     }
     this->selfCircle[j - 'a'].clear();
     if (reverse) {
-//        for (Edge edge: this->graph[j - 'a']) {
-//            if (edge.getTo() != edge.getFrom()) {
-//                this->inDegree[edge.getTo()]--;
-//            }
-//        }
-        this->inDegree[j - 'a'] = 0;//TODO 此处上方注释处的逻辑错误（应改为本行语句），但不影响正确性
+        this->inDegree[j - 'a'] = 0;// 此处上方注释处的逻辑错误（应改为本行语句），但不影响正确性
         for (int i = 0; i < 26; i++) {
-            graph[i].erase(remove_if(graph[i].begin(), graph[i].end(), [j](Edge &s) { return s.getTo() == j - 'a'; }),
+            graph[i].erase(remove_if(graph[i].begin(), graph[i].end(), [j](Edge &s) { return s.to == j - 'a'; }),
                            graph[i].end());
         }
     } else {
-        for (Edge edge: this->graph[j - 'a']) {
-            this->inDegree[edge.getTo()]--;
+        for (Edge &edge: this->graph[j - 'a']) {
+            this->inDegree[edge.to]--;
         }
         this->graph[j - 'a'].clear();
     }
@@ -97,32 +92,32 @@ void Graph::deleteJ(char j, bool reverse) {
 //获取所有链并存到res中
 void Graph::findAll(int cur, vector<vector<string *>> &res, vector<string *> &chain) {
     //如果有自环边，最多只能有一个
-    if (!selfCircle[cur].empty() && !selfCircle[cur][0].isVis()) {
-        chain.push_back(selfCircle[cur][0].getWord());
+    if (!selfCircle[cur].empty() && !selfCircle[cur][0].vis) {
+        chain.push_back(&selfCircle[cur][0].word);
         if (chain.size() > 1) {
             res.push_back(chain);
         }
         if (res.size() > MAX_LENGTH) {
             throw TOO_LONG_EXCEPTION;
         }
-        selfCircle[cur][0].setVis(true);
+        selfCircle[cur][0].vis = true;
         findAll(cur, res, chain);
         chain.pop_back();
-        selfCircle[cur][0].setVis(false);
+        selfCircle[cur][0].vis = false;
     }
     for (Edge &edge: graph[cur]) {
-        if (!edge.isVis()) {
-            chain.push_back(edge.getWord());
+        if (!edge.vis) {
+            chain.push_back(&edge.word);
             if (chain.size() > 1) {
                 res.push_back(chain);
             }
             if (res.size() > MAX_LENGTH) {
                 throw TOO_LONG_EXCEPTION;
             }
-            edge.setVis(true);
-            findAll(edge.getTo(), res, chain);
+            edge.vis = true;
+            findAll(edge.to, res, chain);
             chain.pop_back();
-            edge.setVis(false);
+            edge.vis = false;
         }
     }
 }
@@ -135,7 +130,7 @@ void Graph::simplify() {
             int idx = 0;
             for (int j = 1; j < selfCircle[i].size(); j++) {
                 Edge &edge = selfCircle[i][j];
-                if (selfCircle[i][idx].getLen() < edge.getLen()) {
+                if (selfCircle[i][idx].len < edge.len) {
                     idx = j;
                 }
             }
@@ -150,10 +145,10 @@ void Graph::simplify() {
         }
         for (int j = 0; j < graph[i].size(); j++) {
             Edge &edge = graph[i][j];
-            if (maxIdx[edge.getTo()] == -1) {
-                maxIdx[edge.getTo()] = j;
-            } else if (graph[i][maxIdx[edge.getTo()]].getLen() < edge.getLen()) {
-                maxIdx[edge.getTo()] = j;
+            if (maxIdx[edge.to] == -1) {
+                maxIdx[edge.to] = j;
+            } else if (graph[i][maxIdx[edge.to]].len < edge.len) {
+                maxIdx[edge.to] = j;
             }
         }
         vector<Edge> edges;
@@ -185,9 +180,9 @@ void Graph::tarjan() {
         Edge *edges[26] = {nullptr};
         vector<Edge> newEdges;
         for (Edge &edge: this->graph[i]) {
-            if (scc[i] != scc[edge.getTo()]) {
-                int to = edge.getTo();
-                if (edges[to] == nullptr || edges[to]->getLen() < edge.getLen()) {
+            if (scc[i] != scc[edge.to]) {
+                int to = edge.to;
+                if (edges[to] == nullptr || edges[to]->len < edge.len) {
                     edges[to] = &edge;
                 }
             } else {
@@ -208,11 +203,11 @@ void Graph::tarjanDFS(int x, int &cnt, int dfn[], int low[], bool inStack[], sta
     inStack[x] = true;
     dfn[x] = low[x] = cnt++;
     for (Edge &edge: this->graph[x]) {
-        if (!dfn[edge.getTo()]) {
-            tarjanDFS(edge.getTo(), cnt, dfn, low, inStack, st);
-            low[x] = min(low[x], low[edge.getTo()]);
-        } else if (inStack[edge.getTo()]) {
-            low[x] = min(low[x], dfn[edge.getTo()]);
+        if (!dfn[edge.to]) {
+            tarjanDFS(edge.to, cnt, dfn, low, inStack, st);
+            low[x] = min(low[x], low[edge.to]);
+        } else if (inStack[edge.to]) {
+            low[x] = min(low[x], dfn[edge.to]);
         }
     }
     if (dfn[x] == low[x]) {
@@ -247,11 +242,14 @@ void Graph::findMax(int head, vector<string *> &chain, vector<Edge *> newChain) 
     //如果有自环则一定添加
     if (!this->selfCircle[head].empty()) {
         newChain.push_back(&this->selfCircle[head][0]);
+        this->charLen += newChain.back()->len;
     }
     //递归遍历所有非自环边
-    for (int i = 0; i < this->graph[head].size(); i++) {
-        newChain.push_back(&this->graph[head][i]);
-        findMax(this->graph[head][i].getTo(), chain, newChain);
+    for (Edge &edge: this->graph[head]) {
+        newChain.push_back(&edge);
+        this->charLen += newChain.back()->len;
+        findMax(edge.to, chain, newChain);
+        this->charLen -= newChain.back()->len;
         newChain.pop_back();
     }
     //无后继时链到达终点，可能为最长
@@ -259,6 +257,7 @@ void Graph::findMax(int head, vector<string *> &chain, vector<Edge *> newChain) 
         saveChain(chain, newChain);
     }
     if (!this->selfCircle[head].empty()) {
+        this->charLen -= newChain.back()->len;
         newChain.pop_back();
     }
 }
@@ -267,11 +266,13 @@ void Graph::findMax(int head, int tail, vector<string *> &chain, vector<Edge *> 
     //如果有自环则一定添加
     if (!this->selfCircle[head].empty()) {
         newChain.push_back(&this->selfCircle[head][0]);
+        this->charLen += newChain.back()->len;
     }
     //遇到tail时可以提前判断终止递归
     if (head == tail) {
         saveChain(chain, newChain);
         if (!this->selfCircle[head].empty()) {
+            this->charLen -= newChain.back()->len;
             newChain.pop_back();
         }
         return;
@@ -279,10 +280,13 @@ void Graph::findMax(int head, int tail, vector<string *> &chain, vector<Edge *> 
     //递归遍历所有非自环边
     for (int i = 0; i < this->graph[head].size(); i++) {
         newChain.push_back(&this->graph[head][i]);
-        findMax(this->graph[head][i].getTo(), tail, chain, newChain);
+        this->charLen += newChain.back()->len;
+        findMax(this->graph[head][i].to, tail, chain, newChain);
+        this->charLen -= newChain.back()->len;
         newChain.pop_back();
     }
     if (!this->selfCircle[head].empty()) {
+        this->charLen -= newChain.back()->len;
         newChain.pop_back();
     };
 }
@@ -300,19 +304,20 @@ void Graph::findMaxRecursive(vector<string *> &chain) {
     }
 }
 
-void Graph::findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> newChain) {
+void Graph::findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> &newChain) {
 
     bool flag = this->visited[head];//记录是否为再次访问该节点，只有第一次访问时flag=false
     //是第一次访问时，添加所有自环边
     if (!flag) {
         this->visited[head] = true;
         for (Edge &edge: this->selfCircle[head]) {
+            this->charLen += edge.len;
             newChain.push_back(&edge);
         }
     }
     bool ans = true;//记录是否达到终点
     for (int i = 0; i < graph[head].size(); i++) {
-        if (!this->graph[head][i].isVis()) {
+        if (!this->graph[head][i].vis) {
             ans = false;
             break;
         }
@@ -322,55 +327,83 @@ void Graph::findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> n
         saveChain(chain, newChain);
     } else {
         //有后继
-        for (int i = 0; i < graph[head].size(); i++) {
-            if (!this->graph[head][i].isVis()) {
-                newChain.push_back(&this->graph[head][i]);
-                this->graph[head][i].setVis(true);
-                findMaxRecursive(this->graph[head][i].getTo(), chain, newChain);
+        for (Edge &edge: graph[head]) {
+            if (!edge.vis) {
+                newChain.push_back(&edge);
+                this->charLen += newChain.back()->len;
+                edge.vis = true;
+                findMaxRecursive(edge.to, chain, newChain);
+                this->charLen -= newChain.back()->len;
                 newChain.pop_back();
-                this->graph[head][i].setVis(false);
+                edge.vis = false;
             }
         }
+//        for (int i = 0; i < graph[head].size(); i++) {
+//            if (!this->graph[head][i].vis) {
+//                newChain.push_back(&this->graph[head][i]);
+//                this->charLen += newChain.back()->len;
+//                this->graph[head][i].vis = true;
+//                findMaxRecursive(this->graph[head][i].to, chain, newChain);
+//                this->charLen -= newChain.back()->len;
+//                newChain.pop_back();
+//                this->graph[head][i].vis = false;
+//            }
+//        }
     }
 
     //第一次访问结束，弹出所有自环边并重置访问状态
     if (!flag) {
         for (int i = 0; i < this->selfCircle[head].size(); i++) {
+            this->charLen -= newChain.back()->len;
             newChain.pop_back();
         }
         this->visited[head] = false;
     }
 }
 
-bool Graph::findMaxRecursive(int head, int tail, vector<string *> &chain, vector<Edge *> newChain) {
+bool Graph::findMaxRecursive(int head, int tail, vector<string *> &chain, vector<Edge *> &newChain) {
     //第一次读入加入所有自环
     bool flag = this->visited[head];
     if (!flag) {
         this->visited[head] = true;
         for (Edge &edge: this->selfCircle[head]) {
             newChain.push_back(&edge);
+            this->charLen += edge.len;
         }
     }
     //判断是否到达终点
     bool ans = true;
-    bool hasNext = false;//TODO 记录是否后续的dfs中已经保存过以t结尾的链
+    bool hasNext = false;// 记录是否后续的dfs中已经保存过以t结尾的链
     for (int i = 0; i < graph[head].size(); i++) {
-        if (!this->graph[head][i].isVis()) {
+        if (!this->graph[head][i].vis) {
             ans = false;
             break;
         }
     }
 
     if (!ans) {
-        for (int i = 0; i < graph[head].size(); i++) {
-            if (!this->graph[head][i].isVis()) {
-                newChain.push_back(&this->graph[head][i]);
-                this->graph[head][i].setVis(true);
-                hasNext |= findMaxRecursive(this->graph[head][i].getTo(), tail, chain, newChain);
+        for(Edge &edge:graph[head]){
+            if(!edge.vis){
+                newChain.push_back(&edge);
+                this->charLen += newChain.back()->len;
+                edge.vis = true;
+                hasNext |= findMaxRecursive(edge.to, tail, chain, newChain);
+                this->charLen -= newChain.back()->len;
                 newChain.pop_back();
-                this->graph[head][i].setVis(false);
+                edge.vis = false;
             }
         }
+//        for (int i = 0; i < graph[head].size(); i++) {
+//            if (!this->graph[head][i].vis) {
+//                newChain.push_back(&this->graph[head][i]);
+//                this->charLen += newChain.back()->len;
+//                this->graph[head][i].vis = true;
+//                hasNext |= findMaxRecursive(this->graph[head][i].to, tail, chain, newChain);
+//                this->charLen -= newChain.back()->len;
+//                newChain.pop_back();
+//                this->graph[head][i].vis = false;
+//            }
+//        }
     }
     if (head == tail && !hasNext) {
         saveChain(chain, newChain);//没保存过且满足-t条件时保存
@@ -379,19 +412,12 @@ bool Graph::findMaxRecursive(int head, int tail, vector<string *> &chain, vector
     //弹出第一次加入的所有自环
     if (!flag) {
         for (int i = 0; i < this->selfCircle[head].size(); i++) {
+            this->charLen -= newChain.back()->len;
             newChain.pop_back();
         }
         this->visited[head] = false;
     }
     return hasNext;
-}
-
-int Graph::sum(vector<Edge *> &chain) {
-    int ans = 0;
-    for (Edge *edge: chain) {
-        ans += edge->getLen();
-    }
-    return ans;
 }
 
 void Graph::saveChain(vector<string *> &chain, vector<Edge *> &edges) {
@@ -401,12 +427,12 @@ void Graph::saveChain(vector<string *> &chain, vector<Edge *> &edges) {
     } else if (edges.size() > MAX_LENGTH) {
         throw TOO_LONG_EXCEPTION;
     }
-    int newChainLen = sum(edges);
+    int newChainLen = this->isChar ? this->charLen : edges.size();
     if (newChainLen > this->chainMaxLen) {
         this->chainMaxLen = newChainLen;
         chain.clear();
         for (Edge *edge: edges) {
-            chain.push_back(edge->getWord());
+            chain.push_back(&edge->word);
         }
     }
 }

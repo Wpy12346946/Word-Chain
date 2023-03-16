@@ -17,16 +17,18 @@
 #include <stack>
 
 class Graph {
-    map<int, vector<Edge>> graph;//储存非自环边
-    map<int, vector<Edge>> selfCircle;//储存自环边;
+    vector<Edge> graph[26];//储存非自环边
+    vector<Edge> selfCircle[26];//储存自环边;
     vector<bool> visited;
     int scc[26];//强连通分量所属集合
     int inDegree[26] = {0};//记录每个点（不含自环）的入度
     int chainMaxLen = 0;//最大链长度
+    int charLen=0;//当前链长度
+    bool isChar;//字符/单词?
 public:
     void init();
 
-    map<int, vector<Edge>> makeGraph(char *words[], int len, bool isWeight, bool reverse);
+    void makeGraph(char *words[], int len, bool isWeight, bool reverse);
 
     void addEdge(string &word, bool isWeight, bool reverse);
 
@@ -50,11 +52,9 @@ public:
 
     void findMaxRecursive(vector<string *> &chain);
 
-    void findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> newChain);
+    void findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> &newChain);
 
-    bool findMaxRecursive(int head, int tail, vector<string *> &chain, vector<Edge *> newChain);
-
-    int sum(vector<Edge *> &chain);
+    bool findMaxRecursive(int head, int tail, vector<string *> &chain, vector<Edge *> &newChain);
 
     void saveChain(vector<string *> &chain, vector<Edge *> &edges);//判断并决定是否更新（edges满足所有参数的条件）
 };

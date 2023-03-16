@@ -65,15 +65,15 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
         graph.deleteJ(reject, reverse);
 
         graph.tarjan();
-
+        vector<Edge *> chain;
         if (head != '\0') {
             if (tail != '\0') {
-                graph.findMaxRecursive(head - 'a', tail - 'a', results, vector<Edge *>());
+                graph.findMaxRecursive(head - 'a', tail - 'a', results, chain);
             } else {
-                graph.findMaxRecursive(head - 'a', results, vector<Edge *>());
+                graph.findMaxRecursive(head - 'a', results, chain);
             }
         } else if (tail != '\0') {
-            graph.findMaxRecursive(tail - 'a', results, vector<Edge *>());
+            graph.findMaxRecursive(tail - 'a', results, chain);
         } else {
             graph.findMaxRecursive(results);
         }

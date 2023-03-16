@@ -15,27 +15,3 @@ Edge::Edge(string &word, bool isWeight, bool reverse) {
     this->len = isWeight ? word.length() : 1;
     this->vis= false;
 }
-
-int Edge::getTo() {
-    return to;
-}
-
-int Edge::getFrom() {
-    return from;
-}
-
-string *Edge::getWord() {
-    return &word;
-}
-
-void Edge::setVis(bool vis) {
-    this->vis = vis;
-}
-
-bool Edge::isVis() {
-    return this->vis;
-}
-
-int Edge::getLen() {
-    return this->len;
-}
