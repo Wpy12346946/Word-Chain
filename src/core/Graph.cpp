@@ -1,7 +1,3 @@
-//
-// Created by 57522 on 2023/3/3.
-//
-
 #include <cstring>
 #include <iostream>
 #include "Graph.h"
@@ -344,17 +340,6 @@ void Graph::findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> &
                 edge.vis = false;
             }
         }
-//        for (int i = 0; i < graph[head].size(); i++) {
-//            if (!this->graph[head][i].vis) {
-//                newChain.push_back(&this->graph[head][i]);
-//                this->charLen += newChain.back()->len;
-//                this->graph[head][i].vis = true;
-//                findMaxRecursive(this->graph[head][i].to, chain, newChain);
-//                this->charLen -= newChain.back()->len;
-//                newChain.pop_back();
-//                this->graph[head][i].vis = false;
-//            }
-//        }
     }
 
     //第一次访问结束，弹出所有自环边并重置访问状态
@@ -399,17 +384,6 @@ bool Graph::findMaxRecursive(int head, int tail, vector<string *> &chain, vector
                 edge.vis = false;
             }
         }
-//        for (int i = 0; i < graph[head].size(); i++) {
-//            if (!this->graph[head][i].vis) {
-//                newChain.push_back(&this->graph[head][i]);
-//                this->charLen += newChain.back()->len;
-//                this->graph[head][i].vis = true;
-//                hasNext |= findMaxRecursive(this->graph[head][i].to, tail, chain, newChain);
-//                this->charLen -= newChain.back()->len;
-//                newChain.pop_back();
-//                this->graph[head][i].vis = false;
-//            }
-//        }
     }
     if (head == tail && !hasNext) {
         saveChain(chain, newChain);//没保存过且满足-t条件时保存

@@ -80,9 +80,6 @@ void cliTest(int index) {
         argv[argc++] = arg;
     }
     EXPECT_EQ(ans, run(argc, argv));
-//    for (int i = 1; i < argc; i++) {
-//        delete argv[i];
-//    }
 }
 
 char **loadData(std::string filepath, std::vector<std::string> &wordList) {

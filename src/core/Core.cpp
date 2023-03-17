@@ -1,15 +1,8 @@
-//
-// Created by 57522 on 2023/3/3.
-//
-
 #include <iostream>
 #include "Core.h"
 
 vector<string> stores;//保存要返回给调用方的所有字符串
 vector<string*> results;
-int testy() {
-    return 1;
-}
 
 int gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
     int res;

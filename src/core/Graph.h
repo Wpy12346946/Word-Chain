@@ -1,7 +1,3 @@
-//
-// Created by 57522 on 2023/3/3.
-//
-
 #ifndef C__PROJECT_GRAPH_H
 #define C__PROJECT_GRAPH_H
 

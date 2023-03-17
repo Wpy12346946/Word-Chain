@@ -165,29 +165,7 @@ void writeFile(char **results, int len) {
     outputFile.close();
 }
 
-//void debug() {
-//    ifstream inputFile("E:\\coding\\C++\\VisualStudio\\Word-Chain\\input.txt");
-//    if (!inputFile) {
-//        cerr << "can not to open input.txt" << endl;
-//        return;
-//    }
-//
-//    vector<string> wordList;
-//    char **words = readFile(inputFile, wordList);
-//    int len = wordList.size();
-//
-//    char **results = new char *[100];
-//    int resLen = gen_chains_all(words, len, results);
-////    int resLen = gen_chain_word(words, len, results, '\0', '\0', '\0', true);
-//    cout << resLen << endl;
-//    for (int i = 0; i < resLen; i++) {
-//        std::cout << results[i] << std::endl;
-//    }
-//}
-
 int run(int argc, char *argv[]) {
-//    debug();
-//    return 0;
     char **words = nullptr;
     char *results[20000];
     int resLen;//results长度
@@ -214,10 +192,6 @@ int run(int argc, char *argv[]) {
         if (resLen < 0) {
             throw resLen;
         }
-        // debug用，直接在控制台输出
-//        for (int i = 0; i < resLen; i++) {
-//            std::cout << results[i] << std::endl;
-//        }
         writeFile(results, resLen);
     } catch (int err) {
         if (err == WORD_CYCLE_EXCEPTION) {

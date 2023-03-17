@@ -1,7 +1,3 @@
-//
-// Created by 57522 on 2023/3/14.
-//
-
 #ifndef TEST_RUN_H
 #define TEST_RUN_H
 
