@@ -17,7 +17,6 @@ class Graph {
     vector<Edge> selfCircle[26];//储存自环边;
     vector<bool> visited;
     int scc[26];//强连通分量所属集合
-    unordered_set<int>firsts;//可以为起点的强连通分量
     int inDegree[26] = {0};//记录每个点（不含自环）的入度
     int chainMaxLen = 0;//最大链长度
     int charLen=0;//当前链长度

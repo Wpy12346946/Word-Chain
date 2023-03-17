@@ -172,15 +172,11 @@ void Graph::tarjan() {
         }
     }
     //删除掉非强连通分量间的所有重边
-    for (int i: scc) {
-        firsts.insert(i);
-    }
     for (int i = 0; i < 26; i++) {
         Edge *edges[26] = {nullptr};
         vector<Edge> newEdges;
         for (Edge &edge: this->graph[i]) {
             if (scc[i] != scc[edge.to]) {
-                firsts.erase(scc[edge.to]);
                 int to = edge.to;
                 if (edges[to] == nullptr || edges[to]->len < edge.len) {
                     edges[to] = &edge;
@@ -294,9 +290,7 @@ void Graph::findMax(int head, int tail, vector<string *> &chain, vector<Edge *> 
 void Graph::findMaxRecursive(vector<string *> &chain) {
     queue<int> begin;
     for (int i = 0; i < 26; i++) {
-        if (firsts.find(scc[i]) != firsts.end()) {
-            begin.push(i);
-        }
+        begin.push(i);
     }
     while (!begin.empty()) {
         int node = begin.front();
