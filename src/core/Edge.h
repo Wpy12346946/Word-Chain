@@ -1,7 +1,3 @@
-//
-// Created by 57522 on 2023/3/3.
-//
-
 #ifndef C_PROJECT_EDGE_H
 #define C_PROJECT_EDGE_H
 

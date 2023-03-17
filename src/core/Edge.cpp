@@ -1,6 +1,3 @@
-//
-// Created by 57522 on 2023/3/3.
-//
 #include "Edge.h"
 
 Edge::Edge(string &word, bool isWeight, bool reverse) {

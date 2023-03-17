@@ -1,7 +1,3 @@
-//
-// Created by 李京昊 on 2023/3/13.
-//
-
 #ifndef TEST_ERROR_H
 #define TEST_ERROR_H
 
