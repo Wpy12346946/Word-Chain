@@ -13,8 +13,6 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         super(MyMainWindow, self).__init__()
         self.setupUi(self)
 
-        self.output = ""
-
         self.selectFileButton.clicked.connect(self.chooseFile)
         self.outputButton.clicked.connect(self.outputFile)
 
@@ -35,7 +33,6 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
             with open(filename, 'r') as f:
                 content = f.read()
             self.showInputText.setText(content)
-            self.output = content
         else:
             self.showInputText.setText("")
 
@@ -43,7 +40,9 @@ class MyMainWindow(Ui_MainWindow, QMainWindow):
         filename, t = QFileDialog.getSaveFileName(self, '导出结果', 'solution', "Text (*.txt)")
         if filename:
             with open(filename, 'w') as f:
-                f.write(self.output)
+                f.write(self.showOutputText.toPlainText())
+                f.flush()
+                f.close()
 
     # 更新allButton（查询所有链）按钮状态
     def paramClick(self, state, button, textEdit=None):
