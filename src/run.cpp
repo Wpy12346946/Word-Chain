@@ -192,6 +192,9 @@ int run(int argc, char *argv[]) {
         if (resLen < 0) {
             throw resLen;
         }
+        if (resLen > 20000) {
+            throw TOO_LONG_EXCEPTION;
+        }
         writeFile(results, resLen);
     } catch (int err) {
         if (err == WORD_CYCLE_EXCEPTION) {

@@ -18,6 +18,8 @@ def gen_chains_all(words: str):
 
     if chainLen < 0:
         raise WordException(chainLen)
+    if chainLen > 20000:
+        raise WordException(TOO_LONG_EXCEPTION)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
@@ -38,6 +40,8 @@ def gen_chain_word(words: str, head: int, tail: int, reject: int, enable_loop: b
 
     if chainLen < 0:
         raise WordException(chainLen)
+    if chainLen > 20000:
+        raise WordException(TOO_LONG_EXCEPTION)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
@@ -57,6 +61,8 @@ def gen_chain_char(words: str, head: int, tail: int, reject: int, enable_loop: b
 
     if chainLen < 0:
         raise WordException(chainLen)
+    if chainLen > 20000:
+        raise WordException(TOO_LONG_EXCEPTION)
 
     res = utils.bytes2str(result, chainLen)
     times = endTime - startTime
