@@ -4,7 +4,6 @@ import time
 import utils
 
 dll = WinDLL(r".\\core.dll")
-# dll = WinDLL("E:\\coding\\C++\\VisualStudio\\Word-Chain\\src\\out\\build\\x64-Debug\\core.dll")
 WORD_CYCLE_EXCEPTION = 0x80000001
 TOO_LONG_EXCEPTION = 0x80000002
 
