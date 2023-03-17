@@ -127,7 +127,7 @@ void loadConfig(std::string &filepath, Config &config) {
 }
 
 TEST(test, TestMethod1) {
-    for (int i = 1; i <= 17; i++) {
+    for (int i = 1; i <= 22; i++) {
         coreTest(i);
     }
     for (int i = 1; i <= 14; i++) {
