@@ -216,7 +216,7 @@ void Graph::tarjanDFS(int x, int &cnt, int dfn[], int low[], bool inStack[], sta
             inStack[st.top()] = false;
             st.pop();
         }
-        scc[x] = x;
+        scc[x] = low[x];
         inStack[st.top()] = false;
         st.pop();
     }
@@ -307,7 +307,9 @@ void Graph::findMaxRecursive(vector<string *> &chain) {
 }
 
 void Graph::findMaxRecursive(int head, vector<string *> &chain, vector<Edge *> &newChain) {
-
+    if(head=='d'-'a'){
+        int x=1;
+    }
     bool flag = this->visited[head];//记录是否为再次访问该节点，只有第一次访问时flag=false
     //是第一次访问时，添加所有自环边
     if (!flag) {
