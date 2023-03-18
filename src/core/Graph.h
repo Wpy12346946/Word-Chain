@@ -16,11 +16,14 @@ class Graph {
     vector<Edge> graph[26];//储存非自环边
     vector<Edge> selfCircle[26];//储存自环边;
     vector<bool> visited;
+    vector<Edge> connects[26];//不同集合的强连通分量的边
     int scc[26];//强连通分量所属集合
+    vector<int>scc_rev[26];//每个强连通分量集合包含的点
     int inDegree[26] = {0};//记录每个点（不含自环）的入度
     int chainMaxLen = 0;//最大链长度
-    int charLen=0;//当前链长度
+    int charLen = 0;//当前链长度
     bool isChar;//字符/单词?
+    int num = 0;//强连通分量集合数
 public:
     void init();
 
@@ -53,6 +56,10 @@ public:
     bool findMaxRecursive(int head, int tail, vector<string *> &chain, vector<Edge *> &newChain);
 
     void saveChain(vector<string *> &chain, vector<Edge *> &edges);//判断并决定是否更新（edges满足所有参数的条件）
+
+    void selfLongest(int cur, int maxLen[], vector<string *> maxChain[], vector<Edge *> &newChain);
+
+    void saveChain(int &maxLen, vector<string *> &chain, vector<Edge *> &edges);
 };
 
 

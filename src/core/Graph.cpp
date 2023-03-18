@@ -171,24 +171,23 @@ void Graph::tarjan() {
             tarjanDFS(i, cnt, dfn, low, inStack, st);
         }
     }
-    //删除掉非强连通分量间的所有重边
+    //删除掉非强连通分量间的所有重边，并储存在connects里
     for (int i = 0; i < 26; i++) {
-        Edge *edges[26] = {nullptr};
         vector<Edge> newEdges;
+        Edge *edges[26] = {nullptr};//非强连通分量之间的边
         for (Edge &edge: this->graph[i]) {
             if (scc[i] != scc[edge.to]) {
                 int to = edge.to;
                 if (edges[to] == nullptr || edges[to]->len < edge.len) {
-                    edges[to] = &edge;
+                    edges[to] = &edge;//保存非强连通分量边
                 }
             } else {
                 newEdges.push_back(edge);
             }
         }
-        for (Edge *&edge: edges) {
-            if (edge != nullptr) {
-                newEdges.push_back(*edge);
-            }
+        for (Edge *edge: edges) {
+            if (edge != nullptr)
+                this->connects[i].push_back(*edge);
         }
         this->graph[i] = newEdges;
     }
@@ -208,11 +207,13 @@ void Graph::tarjanDFS(int x, int &cnt, int dfn[], int low[], bool inStack[], sta
     }
     if (dfn[x] == low[x]) {
         while (st.top() != x) {
-            scc[st.top()] = low[x];
+            this->scc_rev[this->num].push_back(st.top());
+            scc[st.top()] = this->num;
             inStack[st.top()] = false;
             st.pop();
         }
-        scc[x] = low[x];
+        this->scc_rev[this->num].push_back(x);
+        scc[x] = this->num++;
         inStack[st.top()] = false;
         st.pop();
     }
@@ -287,16 +288,130 @@ void Graph::findMax(int head, int tail, vector<string *> &chain, vector<Edge *> 
     };
 }
 
-void Graph::findMaxRecursive(vector<string *> &chain) {
-    queue<int> begin;
-    for (int i = 0; i < 26; i++) {
-        begin.push(i);
+//找到强连通分量内部的最长链
+void Graph::selfLongest(int cur, int maxLen[], vector<string *> maxChain[], vector<Edge *> &newChain) {
+    //cur 当前所在节点
+    //maxLen 以i结尾的最长距离
+    //maxChain 以i结尾的最长链
+    bool flag = this->visited[cur];//记录是否为再次访问该节点，只有第一次访问时flag=false
+    //是第一次访问时，添加所有自环边
+    if (!flag) {
+        this->visited[cur] = true;
+        for (Edge &edge: this->selfCircle[cur]) {
+            this->charLen += edge.len;
+            newChain.push_back(&edge);
+        }
     }
+    for (Edge &edge: graph[cur]) {
+        //graph中的一定边一定属于同一强连通分量
+        if (!edge.vis) {
+            newChain.push_back(&edge);
+            this->charLen += newChain.back()->len;
+            edge.vis = true;
+            selfLongest(edge.to, maxLen, maxChain, newChain);
+            this->charLen -= newChain.back()->len;
+            newChain.pop_back();
+            edge.vis = false;
+        }
+    }
+    saveChain(maxLen[cur], maxChain[cur], newChain);
+
+    //第一次访问结束，弹出所有自环边并重置访问状态
+    if (!flag) {
+        for (int i = 0; i < this->selfCircle[cur].size(); i++) {
+            this->charLen -= newChain.back()->len;
+            newChain.pop_back();
+        }
+        this->visited[cur] = false;
+    }
+}
+
+void Graph::findMaxRecursive(vector<string *> &chain) {
+    vector<string *> dp[26][26];//从i到j最长距离对应的单词链
+    int dpMaxLen[26][26] = {{0}};//从i到j的最长距离
+    vector<Edge *> newChain;
+    for (int i = 0; i < 26; i++) {
+        selfLongest(i, dpMaxLen[i], dp[i], newChain);
+    }
+    //拓扑排序
+    bool indice[26][26] = {{false}};//强连通分量集合的连接关系
+    for (int i = 0; i < 26; i++) {
+        for (Edge &edge: this->connects[i]) {
+            indice[scc[i]][scc[edge.to]] = true;
+        }
+    }
+    int outDegree[26] = {0};
+    for (int i = 0; i < this->num; i++) {
+        for (int j = 0; j < this->num; j++) {
+            if (indice[i][j] && i != j) {
+                outDegree[i]++;//inDegree表示第i个强连通分量的出度
+            }
+        }
+    }
+
+    queue<int> begin;//强连通分量集合的拓扑序，从最后往前遍历
+    queue<int> tmp;
+    for (int i = 0; i < this->num; i++) {
+        if (outDegree[i] == 0)
+            tmp.push(i);
+    }
+    while (!tmp.empty()) {
+        int node = tmp.front();
+        begin.push(node);
+        tmp.pop();
+        for (int i = 0; i < this->num; i++) {
+            if (indice[i][node]) {
+                outDegree[i]--;
+                if (outDegree[i] == 0) {
+                    tmp.push(i);
+                }
+            }
+        }
+    }
+    //根据拓扑序从后向前dp
+    int ans[26] = {0};//记录以i为起点的最长路径
+    vector<int> start_end_list[26];//ans对应的start-end节点路径
     while (!begin.empty()) {
-        int node = begin.front();
+        int cur_scc = begin.front();//当前强连通分量
         begin.pop();
-        vector<Edge *> newChain;
-        findMaxRecursive(node, chain, newChain);
+        for (int &start: this->scc_rev[cur_scc]) {
+            int len = 0;//临时记录以start为链起点时的路径总长度
+            start_end_list[start] = {start, start};
+            for (int &end: this->scc_rev[cur_scc]) {
+                //start-end 当前强连通分量集合的起点-终点
+                if (dpMaxLen[start][end] > len) {
+                    len = dpMaxLen[start][end];
+                    start_end_list[start] = {start, end};
+                }
+                for (Edge &edge: this->connects[end]) {
+                    if (dpMaxLen[start][end] + ans[edge.to] + edge.len > len) {
+                        len = dpMaxLen[start][end] + ans[edge.to] + edge.len;
+                        start_end_list[start] = {start, end};
+                        start_end_list[start].insert(start_end_list[start].end(), start_end_list[edge.to].begin(),
+                                                     start_end_list[edge.to].end());
+                    }
+                }
+            }
+            ans[start] = len;
+        }
+    }
+    int maxNode = 0;
+    for (int i = 1; i < 26; i++) {
+        if (ans[i] > ans[maxNode]) {
+            maxNode = i;
+        }
+    }
+    for (int i = 0; i < start_end_list[maxNode].size(); i++) {
+        int start = start_end_list[maxNode][i++];
+        int end = start_end_list[maxNode][i];
+        chain.insert(chain.end(), dp[start][end].begin(), dp[start][end].end());
+        if (i < start_end_list[maxNode].size() - 1) {
+            for (Edge &edge: this->connects[end]) {
+                if (edge.to == start_end_list[maxNode][i + 1]) {
+                    chain.push_back(&edge.word);
+                }
+            }
+        }
     }
 }
 
@@ -403,6 +518,20 @@ void Graph::saveChain(vector<string *> &chain, vector<Edge *> &edges) {
     int newChainLen = this->isChar ? this->charLen : edges.size();
     if (newChainLen > this->chainMaxLen) {
         this->chainMaxLen = newChainLen;
+        chain.clear();
+        for (Edge *edge: edges) {
+            chain.push_back(&edge->word);
+        }
+    }
+}
+
+void Graph::saveChain(int &maxLen, vector<string *> &chain, vector<Edge *> &edges) {
+    if (edges.size() > MAX_LENGTH) {
+        throw TOO_LONG_EXCEPTION;
+    }
+    int newChainLen = this->isChar ? this->charLen : (int) edges.size();
+    if (newChainLen > maxLen) {
+        maxLen = newChainLen;
         chain.clear();
         for (Edge *edge: edges) {
             chain.push_back(&edge->word);
