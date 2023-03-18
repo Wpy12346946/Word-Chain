@@ -394,6 +394,7 @@ void Graph::findMaxRecursive(vector<string *> &chain) {
 
     //根据拓扑序从后向前dp
     int ans[26] = {0};//记录以i为起点的最长路径
+    bool oneChain[26] = {false};//判断以i为起点的链是否为单链
     vector<int> start_end_list[26];//ans对应的start-end节点路径
     while (!begin.empty()) {
         int cur_scc = begin.front();//当前强连通分量
@@ -409,6 +410,14 @@ void Graph::findMaxRecursive(vector<string *> &chain) {
                 }
                 for (Edge &edge: this->connects[end]) {
                     if (dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
+                        // 判断单词链长大于1,此时一定有start=end
+                        if (dpMaxLen[start][end] == 0 && ans[edge.to] == 0) {
+                            //如果没有指向该scc的强连通分量，则说明会形成单链
+                            bool hasFrontFlag = false;//是否是拓扑序中最靠前的
+                            for (int i = 0; i < this->num; i++)
+                                hasFrontFlag |= this->scc_connects[i][scc[start]];
+                            if (!hasFrontFlag) continue;//没有更靠前的强连通分量，如果替换就会出现单链
+                        }
                         ans[start] = dpMaxLen[start][end] + ans[edge.to] + edge.len;
                         start_end_list[start] = {start, end};
                         start_end_list[start].insert(start_end_list[start].end(), start_end_list[edge.to].begin(),
@@ -476,6 +485,7 @@ void Graph::findMaxRecursive(int head, vector<string *> &chain) {
                 }
                 for (Edge &edge: this->connects[end]) {
                     if (dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
+                        if (dpMaxLen[start][end] == 0 && ans[edge.to] == 0) continue;//单词链长必须大于1
                         ans[start] = dpMaxLen[start][end] + ans[edge.to] + edge.len;
                         start_end_list[start] = {start, end};
                         start_end_list[start].insert(start_end_list[start].end(), start_end_list[edge.to].begin(),
@@ -576,6 +586,7 @@ void Graph::findMaxRecursive(int head, int tail, vector<string *> &chain) {
         int cur_scc = begin.front();//当前强连通分量
         begin.pop();
         if (cur_scc == scc[head] && cur_scc == scc[tail]) {
+            if (dp[head][tail].size() == 1) continue;// 判断单词链长大于1
             ans[head] = dpMaxLen[head][tail];
             start_end_list[head] = {head, tail};
         } else if (cur_scc == scc[head]) {
@@ -585,7 +596,8 @@ void Graph::findMaxRecursive(int head, int tail, vector<string *> &chain) {
             for (int &end: this->scc_rev[cur_scc]) {
                 //start-end 当前强连通分量集合的起点-终点
                 for (Edge &edge: this->connects[end]) {
-                    if ((ans[edge.to]!=0||edge.to==tail)&&dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
+                    if ((ans[edge.to] != 0 || edge.to == tail) &&
+                        dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
                         ans[start] = dpMaxLen[start][end] + ans[edge.to] + edge.len;
                         start_end_list[start] = {start, end};
                         start_end_list[start].insert(start_end_list[start].end(), start_end_list[edge.to].begin(),
@@ -605,7 +617,8 @@ void Graph::findMaxRecursive(int head, int tail, vector<string *> &chain) {
                 for (int &end: this->scc_rev[cur_scc]) {
                     //start-end 当前强连通分量集合的起点-终点
                     for (Edge &edge: this->connects[end]) {
-                        if ((ans[edge.to]!=0||edge.to==tail)&&dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
+                        if ((ans[edge.to] != 0 || edge.to == tail) &&
+                            dpMaxLen[start][end] + ans[edge.to] + edge.len > ans[start]) {
                             ans[start] = dpMaxLen[start][end] + ans[edge.to] + edge.len;
                             start_end_list[start] = {start, end};
                             start_end_list[start].insert(start_end_list[start].end(), start_end_list[edge.to].begin(),
