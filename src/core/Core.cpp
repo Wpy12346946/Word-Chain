@@ -2,7 +2,7 @@
 #include "Core.h"
 
 vector<string> stores;//保存要返回给调用方的所有字符串
-vector<string*> results;
+vector<string *> results;
 
 int gen_chain_word(char *words[], int len, char *result[], char head, char tail, char reject, bool enable_loop) {
     int res;
@@ -58,15 +58,14 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
         graph.deleteJ(reject, reverse);
 
         graph.tarjan();
-        vector<Edge *> chain;
         if (head != '\0') {
             if (tail != '\0') {
-                graph.findMaxRecursive(head - 'a', tail - 'a', results, chain);
+                graph.findMaxRecursive(head - 'a', tail - 'a', results);
             } else {
-                graph.findMaxRecursive(head - 'a', results, chain);
+                graph.findMaxRecursive(head - 'a', results);
             }
         } else if (tail != '\0') {
-            graph.findMaxRecursive(tail - 'a', results, chain);
+            graph.findMaxRecursive(tail - 'a', results);
         } else {
             graph.findMaxRecursive(results);
         }
@@ -76,13 +75,15 @@ int genMaxchain(char *words[], int len, char *result[], char head, char tail, ch
     if (reverse) {
         for (int i = results.size() - 1; i >= 0; i--) {
             stores.push_back(*results[i]);
-            result[res++] = (char *) stores.back().c_str();
+        }
+        for (string &s: stores) {
+            result[res++] = (char *) s.c_str();
         }
     } else {
         for (string *s: results) {
             stores.push_back(*s);
         }
-        for (string &s:stores){
+        for (string &s: stores) {
             result[res++] = (char *) s.c_str();
         }
     }
@@ -98,9 +99,9 @@ int gen_chains_all(char *words[], int len, char *result[]) {
     if (graph.hasCircle()) {
         return WORD_CYCLE_EXCEPTION;
     }
-    vector<vector<string*>> allChains;
+    vector<vector<string *>> allChains;
     for (int i = 0; i < 26; i++) {
-        vector<string*> chain;
+        vector<string *> chain;
         try {
             graph.findAll(i, allChains, chain);
         } catch (int e) {
@@ -111,7 +112,7 @@ int gen_chains_all(char *words[], int len, char *result[]) {
     results.clear();
     stores.clear();
     int res = 0;
-    for (vector<string*> &chain: allChains) {
+    for (vector<string *> &chain: allChains) {
         string s;
         stores.emplace_back();
         for (string *word: chain) {
